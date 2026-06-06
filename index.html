@@ -1,0 +1,2018 @@
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>同日回响之5Y</title>
+<style>
+/* ============================================================
+   同日回响之5Y — 五年日记每日一问
+   纯离线 · 零依赖 · 永久可用
+   ============================================================ */
+
+:root {
+  --blue:        #8dbcd7;
+  --blue-light:  #c5ddec;
+  --green:       #9cc0a8;
+  --green-light: #c8dfd0;
+  --warm-yellow: #e0d3b8;
+  --pink:        #debdb8;
+  --pink-light:  #edd4d0;
+  --text:        #3d4f5f;
+  --text-light:  #6b879e;
+  --text-muted:  #9aafc4;
+  --card-bg:     rgba(255,255,255,0.82);
+  --card-border: #dce6ef;
+  --shadow-sm:   0 1px 8px rgba(60,70,80,0.05);
+  --shadow:      0 2px 16px rgba(60,70,80,0.07);
+  --shadow-lg:   0 4px 24px rgba(60,70,80,0.10);
+  --radius:      20px;
+  --radius-sm:   14px;
+  --transition:  0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- Canvas 星空背景 ---- */
+#starfield {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  transition: opacity 1.5s ease;
+}
+
+/* ---- 装饰云朵 ---- */
+.clouds {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.30;
+}
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+.cloud-1 { width:90px; height:36px; top:50px; left:6%; animation: floatCloud 28s ease-in-out infinite; }
+.cloud-1::before { width:40px; height:40px; top:-20px; left:18px; }
+.cloud-1::after  { width:50px; height:50px; top:-16px; left:40px; }
+.cloud-2 { width:70px; height:28px; top:130px; right:8%; animation: floatCloud 22s ease-in-out 5s infinite; }
+.cloud-2::before { width:32px; height:32px; top:-16px; left:14px; }
+.cloud-2::after  { width:38px; height:38px; top:-12px; left:32px; }
+.cloud-3 { width:80px; height:32px; top:280px; left:4%; animation: floatCloud 32s ease-in-out 10s infinite; }
+.cloud-3::before { width:36px; height:36px; top:-18px; left:16px; }
+.cloud-3::after  { width:44px; height:44px; top:-14px; left:36px; }
+@keyframes floatCloud {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(18px); }
+  75% { transform: translateX(-14px); }
+}
+
+/* ---- 主内容层 ---- */
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+/* ---- 标题卡片 ---- */
+.header-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 26px 24px 18px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: visible;
+}
+.header-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 22%; right: 22%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--pink), var(--blue), var(--green), transparent);
+  border-radius: 0 0 3px 3px;
+}
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.title-deco {
+  font-size: 1.2rem;
+  opacity: 0.65;
+  animation: titleBounce 3s ease-in-out infinite;
+}
+.title-deco:nth-child(1) { animation-delay: 0s; }
+.title-deco:nth-child(3) { animation-delay: 1.5s; }
+@keyframes titleBounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.header .title {
+  font-family: "Georgia","Times New Roman","华文楷体","KaiTi","STKaiti","楷体",serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  opacity: 0.9;
+}
+.header .subtitle {
+  font-family: "Georgia","Times New Roman","华文楷体","KaiTi","STKaiti","楷体",serif;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  font-style: italic;
+}
+.header-cute {
+  margin-top: 8px;
+  font-size: 1.5rem;
+  letter-spacing: 5px;
+  opacity: 0.65;
+}
+
+/* ---- 分隔线 ---- */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  padding: 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  max-width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+}
+
+/* ---- 日期卡片 ---- */
+.date-card {
+  text-align: center;
+  padding: 2px 0;
+}
+.date-card .date-main {
+  font-family: "Georgia","Times New Roman","华文宋体","STSong","SimSun","宋体",serif;
+  font-size: 1.12rem;
+  font-weight: 400;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
+}
+.date-card .date-lunar {
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+
+/* ---- 卡片通用 ---- */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  box-shadow: var(--shadow);
+  transition: all var(--transition);
+}
+
+/* ---- 问题卡片 ---- */
+.question-card {
+  position: relative;
+  border-left: 3px solid var(--blue-light);
+}
+.question-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.question-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--card-border), transparent);
+  max-width: 60px;
+}
+.question-text {
+  font-family: "Georgia","Times New Roman","华文宋体","STSong","SimSun","宋体",serif;
+  font-size: 1.12rem;
+  line-height: 1.9;
+  color: var(--text);
+  font-weight: 400;
+  padding-right: 68px;
+  min-height: 2.4em;
+  letter-spacing: 0.03em;
+}
+.question-type-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.badge-deep {
+  background: rgba(141,188,215,0.15);
+  color: #5a8aaa;
+}
+.badge-casual {
+  background: rgba(156,192,168,0.15);
+  color: #6a9a7a;
+}
+
+/* ---- 按钮 ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 20px;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  font-size: 0.86rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all var(--transition);
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  white-space: nowrap;
+  user-select: none;
+  outline: none;
+  font-weight: 400;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-change {
+  position: absolute;
+  top: 22px; right: 22px;
+  background: rgba(255,255,255,0.65);
+  border-color: var(--pink);
+  color: #b8958e;
+  font-size: 0.78rem;
+  padding: 7px 15px;
+}
+.btn-change:hover {
+  background: rgba(222,189,184,0.22);
+  border-color: #c9a09a;
+  color: #a0807a;
+}
+.btn-change:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-save {
+  align-self: center;
+  background: linear-gradient(135deg, #9abfd5, #8db4cb);
+  color: #fff;
+  border: none;
+  font-size: 0.95rem;
+  padding: 13px 40px;
+  letter-spacing: 0.08em;
+  border-radius: 26px;
+  box-shadow: 0 3px 16px rgba(141,188,215,0.3);
+}
+.btn-save:hover {
+  background: linear-gradient(135deg, #8ab5cc, #7da8c0);
+  box-shadow: 0 5px 22px rgba(141,188,215,0.4);
+  transform: translateY(-2px);
+}
+
+/* ---- 文本框 ---- */
+.editor-card {
+  padding: 18px 22px;
+  position: relative;
+}
+.editor-card::before {
+  content: '✎';
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.35;
+  background: white;
+  padding: 0 6px;
+  border-radius: 50%;
+}
+.editor-card textarea {
+  width: 100%;
+  min-height: 250px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: "Georgia","Times New Roman","华文宋体","STSong","SimSun","宋体",serif;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--text);
+  background: transparent;
+  letter-spacing: 0.02em;
+}
+.editor-card textarea::placeholder {
+  color: #bac8d6;
+  letter-spacing: 0.04em;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size: 0.9rem;
+}
+.editor-card textarea:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.editor-card .char-count {
+  text-align: right;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.editor-locked-hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--pink);
+  margin-top: 4px;
+  display: none;
+}
+
+/* ---- 保存状态指示 ---- */
+.save-indicator {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.sync-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sync-idle    { background: #ccc; }
+.sync-syncing { background: #f0c060; animation: syncPulse 0.8s ease-in-out infinite; }
+.sync-success { background: #6a9a7a; }
+.sync-error   { background: #c06060; }
+@keyframes syncPulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ---- 设置面板 ---- */
+.settings-panel {
+  margin-top: 4px;
+  padding: 20px 24px;
+}
+.settings-title {
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.settings-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.settings-row label {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.settings-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  outline: none;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  color: var(--text);
+  background: rgba(255,255,255,0.6);
+}
+.settings-row input:focus {
+  border-color: var(--blue);
+}
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.btn-save-sm {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  font-size: 0.82rem;
+  padding: 8px 18px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+}
+.btn-save-sm:hover { opacity: 0.85; }
+.btn-tool-sm {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding: 8px 16px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-tool-sm:hover { background: rgba(200,214,229,0.2); }
+.settings-status {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  min-height: 1.4em;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.settings-help {
+  margin-top: 8px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.settings-help summary {
+  cursor: pointer;
+  color: var(--blue);
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.settings-help p {
+  margin: 4px 0;
+  padding-left: 8px;
+}
+.settings-help a {
+  color: var(--blue);
+}
+.btn-settings {
+  border-color: #c8b8d0 !important;
+  color: #8a7a9a !important;
+}
+.btn-settings:hover {
+  background: rgba(180,160,200,0.15) !important;
+}
+
+/* ---- 底部工具栏 ---- */
+.toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 0;
+}
+.btn-tool {
+  background: rgba(255,255,255,0.5);
+  border-color: var(--card-border);
+  color: var(--text-light);
+  font-size: 0.76rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+.btn-tool:hover {
+  background: rgba(200,214,229,0.3);
+  border-color: #bcc8d6;
+}
+
+/* ---- 提示消息 ---- */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  z-index: 999;
+  padding: 12px 28px;
+  border-radius: 24px;
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  pointer-events: none;
+  font-family: "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast-success { background: #edf6f0; color: #5a8a6a; border:1px solid #c8dfd0; }
+.toast-info    { background: #edf2f8; color: #5a7a9a; border:1px solid #c5ddec; }
+.toast-warning { background: #fef5f0; color: #9a7a6a; border:1px solid #edd4d0; }
+
+/* ---- 响应式 ---- */
+@media (max-width: 600px) {
+  #app { padding: 18px 10px 36px; gap: 14px; }
+  .header .title { font-size: 1.4rem; }
+  .question-text { font-size: 0.98rem; padding-right: 0; }
+  .btn-change { position: static; margin-top: 8px; display: block; text-align: center; width: 100%; }
+  .card { padding: 16px 14px; }
+  .header-card { padding: 20px 14px 16px; }
+}
+
+/* ---- 隐藏的文件输入 ---- */
+#importFileInput { display: none; }
+
+/* ---- 滚动条 ---- */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4dfe8; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- 星空画布 -->
+<canvas id="starfield" width="395" height="776"></canvas>
+
+<!-- 装饰云朵 -->
+<div class="clouds">
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+</div>
+
+<!-- 提示消息 -->
+<div id="toast" class="toast">☁️ 云端同步已就绪！现在可在其他设备打开此页面，输入相同 Token 即可同步</div>
+
+<!-- 隐藏的文件导入 -->
+<input type="file" id="importFileInput" accept=".json">
+
+<!-- 主界面 -->
+<div id="app">
+
+  <!-- 标题卡片 -->
+  <div class="header-card">
+    <div class="header">
+      <div class="title-row">
+        <span class="title-deco">🌸</span>
+        <div class="title">同日回响之5Y</div>
+        <span class="title-deco">🌸</span>
+      </div>
+      <div class="subtitle">五年日记 · 每日一问</div>
+    </div>
+    <div class="header-cute">🐻  ˚✧₊⁎  🐣  ˚✧₊⁎  ⭐</div>
+  </div>
+
+  <!-- 分隔线 -->
+  <div class="divider">✿ 今 日 ✿</div>
+
+  <!-- 日期 -->
+  <div class="date-card">
+    <div class="date-main" id="dateDisplay">2026年6月6日  星期六</div>
+    <div class="date-lunar" id="yearRange">五年日记 · 同日回响</div>
+  </div>
+
+  <!-- 问题卡片 -->
+  <div class="card question-card" id="questionCard">
+    <div class="question-label">📖 今日之问</div>
+    <div class="question-text" id="questionText">芒种。播种与收获的季节。你最近在'播种'什么？</div>
+    <span class="question-type-badge badge-casual" id="questionBadge" style="display: inline-block;">轻松日常</span>
+    <button class="btn btn-change" id="btnChange" onclick="changeQuestion()" title="可多次点击，直到换到满意的题目">🔄 换一题</button>
+  </div>
+
+  <!-- 回答编辑区 -->
+  <div class="card editor-card">
+    <textarea id="answerInput" placeholder="在这里写下你的回答…
+
+可以随时回来补充修改（限今日内）"></textarea>
+    <div class="char-count"><span id="charCount">0</span> 字</div>
+    <div class="editor-locked-hint" id="lockedHint" style="display: none;">🔒 这是过往日期的记录，已自动锁定（只读）</div>
+  </div>
+
+  <!-- 保存按钮 -->
+  <button class="btn btn-save" id="btnSave" onclick="saveAnswer()">💾 保 存</button>
+
+  <!-- 保存状态指示 -->
+  <div class="save-indicator" id="saveIndicator" style="display:none;">
+    <span>📝 上次保存：</span><span id="saveTime"></span>
+    <span class="sync-dot sync-success" id="syncDot" title="已同步 ✅"></span>
+  </div>
+
+  <!-- 分隔线 -->
+  <div class="divider">⋆｡°✩ 数 据 管 理 ✩°｡⋆</div>
+
+  <!-- 底部工具 -->
+  <div class="toolbar">
+    <button class="btn btn-tool" onclick="exportWord()">📥 导出Word</button>
+    <button class="btn btn-tool" onclick="exportJSON()">📤 备份JSON</button>
+    <button class="btn btn-tool" onclick="document.getElementById('importFileInput').click()">📥 导入备份</button>
+    <button class="btn btn-tool" onclick="resetToday()">🗑 清空今日</button>
+    <button class="btn btn-tool btn-settings" onclick="toggleSettings()">⚙️ 云同步</button>
+  </div>
+
+  <!-- 设置面板 -->
+  <div class="card settings-panel" id="settingsPanel" style="display: block;">
+    <div class="settings-title">☁️ 云端同步设置</div>
+    <p class="settings-desc">设置后可实现手机电脑数据互通。需要在 GitHub 创建一个 Token（仅需 gist 权限）。</p>
+    <div class="settings-row">
+      <label>GitHub Token：</label>
+      <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    </div>
+    <div class="settings-actions">
+      <button class="btn btn-save-sm" onclick="setupCloud()">🔗 连接并同步</button>
+      <button class="btn btn-tool-sm" onclick="disconnectCloud()">断开</button>
+    </div>
+    <div class="settings-status" id="settingsStatus">⏳ 正在部署到 GitHub Pages…</div>
+    <div class="settings-actions" style="margin-top:8px;">
+      <button class="btn btn-save-sm" onclick="deployToPages()" style="background:linear-gradient(135deg, #7eb8da, #6aacce);">📤 一键部署到公网</button>
+      <span style="font-size:0.72rem;color:var(--text-muted);">部署后手机也能打开</span>
+    </div>
+    <div id="deployStatus" style="font-size:0.76rem;color:var(--text-muted);margin-top:4px;"></div>
+    <div class="settings-help">
+      <details open="">
+        <summary>📖 如何获取 Token？（点击展开）</summary>
+        <p>1. 打开 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>（需先注册登录 GitHub）</p>
+        <p>2. 点击「Generate new token」→「Generate new token (classic)」</p>
+        <p>3. Note 填「同日回响」，Expiration 选「No expiration」</p>
+        <p>4. 勾选 <b>gist</b> 权限（只勾这一个即可）</p>
+        <p>5. 点底部「Generate token」，复制生成的 ghp_ 开头的字符串</p>
+        <p>6. 粘贴到上方输入框，点击「连接并同步」</p>
+      </details>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   同 日 回 响 之 5Y  —  主 程 序
+   ============================================================ */
+
+// ==================== 题库 ====================
+// 格式: "MM-DD": { default: "默认题", alt: ["备选1","备选2","备选3"] }
+// 如果你想替换题目，直接修改这里的文字即可（就像改Word文档一样简单）
+// 每个日期共4题：1道默认 + 3道备选
+// ★ 含2月29日，共366天 ★
+
+const QUESTION_BANK = {
+
+// ═══ 一月 · 新年启程 ═══
+"01-01":{default:"新的一年开始了，你最想在这一年里完成的一件事是什么？",alt:["回顾去年今日，你最大的变化是什么？","如果用一个词定义你的新年，它会是什么？","写下今天你心中最强烈的那个愿望。"]},
+"01-02":{default:"今天的你，和昨天的你有什么不同？",alt:["如果今天是新年的第二天，你打算迈出的第一小步是什么？","有什么事情是你一直想做但还没开始的？","描述一下你今天醒来时的第一个念头。"]},
+"01-03":{default:"你最近一次感到真正快乐是什么时候？为什么？",alt:["今天发生了什么让你会心一笑的小事？","在你看来，快乐更多来自计划还是意外？","如果快乐有颜色，今天属于什么颜色？"]},
+"01-04":{default:"如果今年的目标只能保留三个，你会留下哪三个？",alt:["你曾经放弃过的目标中，哪一个最让你遗憾？","目标对你来说意味着方向还是压力？","今天做了一件什么事情，让你离目标更近了一步？"]},
+"01-05":{default:"用一个比喻来形容你现在的状态——你像什么？",alt:["如果把自己比作一种天气，今天你是什么天气？","你觉得自己更像一棵树、一条河、还是一阵风？","今天有没有哪个瞬间让你觉得'这就是我'？"]},
+"01-06":{default:"你生命中最重要的那个人，最近过得怎么样？",alt:["今天有没有想起某个好久没联系的人？","如果可以给任何一个人写一封信，你会写给谁？","今天你和谁说了最多的话？说了些什么？"]},
+"01-07":{default:"你对'时间'这件事，最近有了什么新的理解？",alt:["如果时间可以暂停，你最想停在哪个时刻？","你觉得时间过得太快还是太慢？为什么？","今天有没有哪一刻你觉得时间好像静止了？"]},
+"01-08":{default:"最近一次你对自己说'不'是因为什么？",alt:["你擅长拒绝别人吗？最近一次拒绝别人是什么情况？","有没有什么事情你希望自己当初说了'不'？","今天你为自己划定了什么边界？"]},
+"01-09":{default:"如果可以回到过去改变一件事，你会选择改变什么？",alt:["你觉得'遗憾'和'教训'的区别在哪里？","有没有哪件事虽然不完美但你也不想改变？","今天的你，会让未来的自己后悔吗？"]},
+"01-10":{default:"十年后的你，会怎么看待今天正在烦恼的这件事？",alt:["你现在的烦恼，放在五年后看还重要吗？","今天有什么事情困扰了你？试着写下来看看。","你觉得'时间能治愈一切'这句话对吗？"]},
+"01-11":{default:"今天你身体感觉怎么样？你有多久没有关注自己的身体了？",alt:["身体有没有在向你发出什么信号？","你今天为自己做了什么对身体好的事？","你觉得身心健康和事业成功哪个更重要？"]},
+"01-12":{default:"你最近读过或听过的最打动你的一句话是什么？",alt:["有没有一本书/一部电影/一首歌最近深深触动了你？","如果让你写一句话给一年后的自己，会是什么？","今天你听到了什么让你印象深刻的话？"]},
+"01-13":{default:"'家'对你来说意味着什么？",alt:["你现在住的地方，让你有'家'的感觉吗？","如果可以任意选择，你想住在什么样的地方？","今天在家里最舒服的时刻是什么？"]},
+"01-14":{default:"你觉得'成长'和'变老'是一回事吗？",alt:["最近你在哪方面感觉自己真正成长了？","有没有一个瞬间你突然觉得自己'长大了'？","你害怕变老吗？为什么？"]},
+"01-15":{default:"如果今天是你人生的最后一天，你会怎么度过？",alt:["有什么事情是你一直想做但因为害怕而没做的？","你觉得什么样的人生才算'没有遗憾'？","今天你做了什么让自己觉得'活着真好'的事？"]},
+"01-16":{default:"你的朋友圈子最近有什么变化？",alt:["哪些朋友让你觉得相处起来最轻松？为什么？","最近有没有新认识让你印象深刻的人？","你觉得朋友的数量和质量哪个更重要？"]},
+"01-17":{default:"今天你花了最多时间做的三件事是什么？你满意这个分配吗？",alt:["如果一天有25小时，多出来的一小时你会用来做什么？","你觉得自己的时间管理做得怎么样？","今天有没有浪费时间的时刻？那真的是浪费吗？"]},
+"01-18":{default:"你对'成功'的定义是什么？这个定义最近有变化吗？",alt:["你羡慕的那些'成功人士'，你真的想成为他们吗？","最近有什么小成就让你感到自豪？","如果没有人评判你，你心目中的成功是什么样的？"]},
+"01-19":{default:"今天天气怎么样？你的心情和天气有关吗？",alt:["你最喜欢什么天气？为什么？","下雨天会让你想到什么？","今天有没有抬头看天空？你看到了什么？"]},
+"01-20":{default:"你身上最想改掉的一个习惯是什么？",alt:["你觉得习惯是被养成的还是被打破的？","最近有没有养成什么新习惯？","如果只能保留一个习惯，你会保留什么？"]},
+"01-21":{default:"你觉得自己是一个勇敢的人吗？勇敢对你来说是什么？",alt:["最近一次你鼓起勇气做了什么？","恐惧和勇气可以共存吗？","今天有没有什么事情让你觉得需要勇气去面对？"]},
+"01-22":{default:"如果钱不是问题，你最想做什么工作？",alt:["你现在的工作/学习让你有成就感吗？","你觉得工作和爱好应该分开还是一体？","今天工作中最让你开心的是什么？"]},
+"01-23":{default:"你最近有没有对什么感到惊讶或意外？",alt:["生活中最近发生了什么你没预料到的事？","惊喜和惊吓的区别在哪里？","今天发生了什么让你意想不到的事？"]},
+"01-24":{default:"你觉得'爱'是可以被学习的吗？还是天生的？",alt:["你从谁那里学会了什么是爱？","你表达爱的方式是什么？","今天你有没有感受到被爱的时刻？"]},
+"01-25":{default:"你有没有一个'秘密基地'？真实的或想象中的都可以。",alt:["当你需要独处的时候，你会去哪里？","独处对你来说是充电还是孤独？","今天你有没有给自己留一段安静的时间？"]},
+"01-26":{default:"你对'自由'的理解是什么？你现在自由吗？",alt:["自由和责任是对立的吗？","如果可以完全自由地安排今天，你会怎么过？","你觉得财务自由、时间自由和精神自由哪个最重要？"]},
+"01-27":{default:"最近有没有什么事情让你感到尴尬？后来怎么处理的？",alt:["你容易感到尴尬吗？还是不太在意别人的眼光？","回忆一次你印象最深的尴尬经历，现在看还尴尬吗？","今天有没有哪个时刻你差点笑出来？"]},
+"01-28":{default:"你相信'命运'还是'选择'？为什么？",alt:["你做过的最重要的一个选择是什么？","有没有什么事情让你觉得'冥冥之中自有安排'？","今天你做了什么选择？大的小的都算。"]},
+"01-29":{default:"如果让你给五年前的自己写一句话，会是什么？",alt:["五年前的你，和现在的你最大的不同是什么？","过去五年你最骄傲的一个变化是什么？","你觉得五年后的你会感谢现在的你吗？"]},
+"01-30":{default:"今天你吃了什么？有没有哪一口让你觉得特别满足？",alt:["食物对你来说意味着什么？仅仅是果腹吗？","你最怀念的'家的味道'是什么？","如果今天只能吃一种食物，你会选什么？"]},
+"01-31":{default:"一个月过去了。这个月你过得怎么样？用一个词概括。",alt:["这个月最值得纪念的一件事是什么？","下个月你最期待什么？","给自己的1月打个分（1-10），为什么是这个分数？"]},
+
+// ═══ 二月 · 冬日静思 ═══
+"02-01":{default:"二月了，冬天让你想到了什么？你喜欢冬天吗？",alt:["寒冷的日子里，什么最能温暖你？","冬天有没有让你想要冬眠的时刻？","今天窗外的世界是什么样子的？"]},
+"02-02":{default:"你是一个念旧的人吗？最近有没有翻看旧照片或旧物？",alt:["过去的东西你会留着还是丢掉？为什么？","如果只能保留一件有纪念意义的物品，会是什么？","最近有没有什么东西让你回忆起一段往事？"]},
+"02-03":{default:"你觉得'耐心'是一种天赋还是一种练习？你耐心好吗？",alt:["最近有什么事考验了你的耐心？","在什么情况下你最容易失去耐心？","今天有没有什么事情你愿意慢慢等的？"]},
+"02-04":{default:"如果可以拥有一种超能力，你想要什么？为什么？",alt:["超能力会让你更快乐还是更烦恼？","你觉得人类最接近'超能力'的能力是什么？","今天有没有哪一刻你希望自己有超能力？"]},
+"02-05":{default:"你今天和父母/家人联系了吗？你们的关系怎么样？",alt:["家人对你的期待和你自己的规划一致吗？","你从父母身上学到了什么？又有哪些是你不想重复的？","今天你想对家人说的一句话是什么？"]},
+"02-06":{default:"你上次哭是什么时候？因为什么？",alt:["你觉得哭是软弱的表现吗？","什么样的事情最容易触动你的泪点？","今天有没有哪一刻你感到情绪涌动？"]},
+"02-07":{default:"你对'美'的定义是什么？什么东西让你觉得美？",alt:["有没有一个人/一个地方/一件物品让你觉得特别美？","你觉得内在美和外在美哪个更重要？","今天你看到了什么美的东西？"]},
+"02-08":{default:"如果你可以学任何一门新技能，不考虑时间和成本，会学什么？",alt:["你最近一次学习新东西是什么时候？","有什么技能是你一直想学但觉得'太晚了'的？","今天你学到了什么新东西？哪怕很小。"]},
+"02-09":{default:"你觉得自己是一个乐观的人还是悲观的人？",alt:["乐观和悲观是天生的还是后天的？","在困难的时候，什么能让你看到希望？","今天你的心态是偏乐观还是偏悲观？"]},
+"02-10":{default:"社交对你来说是充电还是耗电？",alt:["你觉得自己是内向还是外向？还是介于两者之间？","最近一次社交让你感觉怎么样？","今天你和多少人说了话？感觉如何？"]},
+"02-11":{default:"你觉得'运气'在人生中占多大比重？你觉得自己运气好吗？",alt:["你有没有过'运气爆棚'的经历？","运气和努力的关系是什么？","今天有没有什么小幸运降临？"]},
+"02-12":{default:"你最近在看什么书/剧/电影？有什么推荐的吗？",alt:["有没有一部作品你看了一遍又一遍？为什么？","你更喜欢故事还是纪实？","最近有什么内容让你熬夜也要看完？"]},
+"02-13":{default:"情人节快到了。你对'浪漫'的定义是什么？",alt:["你觉得浪漫是必要的还是矫情的？","你做过的最浪漫的一件事是什么？","今天有没有什么小小的浪漫发生？"]},
+"02-14":{default:"爱与被爱，哪一个让你更有感触？",alt:["你觉得自己擅长爱人吗？擅长接受爱吗？","有没有一种爱让你觉得无条件的？","今天你想对谁说一句'我爱你'或'谢谢你'？"]},
+"02-15":{default:"你相信直觉吗？有没有直觉特别准的经历？",alt:["直觉和理性分析，你更信任哪个？","有没有直觉告诉你要做什么但你忽略了的？","今天你的直觉跟你说了什么？"]},
+"02-16":{default:"你觉得自己最大的优点是什么？不要谦虚。",alt:["别人经常夸你什么？","这个优点在什么时候帮了你大忙？","今天你有没有用到自己的这个优点？"]},
+"02-17":{default:"如果有一个人生遥控器，可以快进、暂停、回放，你最常用哪个键？",alt:["你现在的人生阶段是快进中还是暂停中？","有没有哪段人生你想一帧一帧地回放？","今天你希望时间是快一点还是慢一点？"]},
+"02-18":{default:"你觉得自己是一个好的倾听者吗？",alt:["别人愿意跟你倾诉吗？","倾听和给建议，哪个更重要？","今天你有没有认真听一个人说话？"]},
+"02-19":{default:"你对'金钱'的态度是什么？你觉得自己和钱的关系健康吗？",alt:["钱对你来说意味着安全感、自由还是其他？","你花钱最多的地方是什么？这反映了你的什么价值观？","今天你花钱了吗？每一笔都觉得值得吗？"]},
+"02-20":{default:"你最近有没有做什么梦？梦里的内容你还记得吗？",alt:["你相信梦有含义吗？","有没有一个反复出现的梦？","如果梦是潜意识的信号，你最近在潜意识里关注什么？"]},
+"02-21":{default:"你的'舒适区'边界在哪里？最近有跨出去过吗？",alt:["舒适区一定需要打破吗？","有没有一次走出舒适区的经历让你获益良多？","今天你在舒适区内还是舒适区外？"]},
+"02-22":{default:"如果让你给自己写一份'人生使用说明书'，第一行会写什么？",alt:["别人了解你之前最需要知道的一件事是什么？","你有没有什么奇怪的'功能'或'设定'？","今天你更了解自己哪一点了？"]},
+"02-23":{default:"你觉得自己是一个有创造力的人吗？创造对你意味着什么？",alt:["最近有没有创造出什么让你满意的东西？","你觉得创造力可以被培养吗？","今天你有没有灵光一闪的时刻？"]},
+"02-24":{default:"你最珍视的一段记忆是什么？闭上眼睛就能回到的那个时刻。",alt:["记忆是可以被信任的吗？","你更擅长记住美好的事情还是糟糕的事情？","今天有没有创造了一个值得珍藏的瞬间？"]},
+"02-25":{default:"你喜欢现在的生活节奏吗？太快了还是太慢了？",alt:["如果可以调整生活节奏，你会做哪些改变？","慢生活和懒散的区别在哪里？","今天的生活节奏让你舒服吗？"]},
+"02-26":{default:"你上一次对陌生人产生好感是因为什么？",alt:["陌生人更容易让你敞开心扉还是更防备？","有没有陌生人的一句话/一个举动让你温暖了很久？","今天有没有注意到一个陌生人的善意？"]},
+"02-27":{default:"你觉得'成熟'的标志是什么？你自己成熟吗？",alt:["成熟和世故是一回事吗？","在什么时刻你觉得自己真的长大了？","最近有没有哪件事让你感觉自己处理得更成熟了？"]},
+"02-28":{default:"二月结束了。这个月你最感恩的一件事是什么？",alt:["回顾二月，有什么事是你没想到会发生的？","给二月道个别，对三月说句什么？","今天你感受到的最大的情绪是什么？"]},
+"02-29":{default:"今天是四年一遇的2月29日。四年后的今天，你希望自己在哪里？在做什么？",alt:["每四年才多出来的一天，你打算怎么过得不一样？","四年后你希望自己有什么变化？","把今天当作一份'时间礼物'，你想用它来做什么？"]},
+
+// ═══ 三月 · 春暖花开 ═══
+"03-01":{default:"三月了，春天来了。你最期待春天的什么？",alt:["春天让你想到什么颜色、什么气味？","你觉得春天是一个'开始'的季节吗？","今天你看到春天的第一缕信号是什么？"]},
+"03-02":{default:"你最近有没有尝试什么新事物？感觉如何？",alt:["尝试新事物让你兴奋还是紧张？","有没有什么事情你很想尝试但还没勇气？","今天你有没有做了一件跟平常不一样的事？"]},
+"03-03":{default:"你觉得自己'配得感'强吗？接受赞美和好运时你会觉得不好意思吗？",alt:["为什么有时候我们会觉得自己'不配'拥有好的东西？","最近有没有什么事情让你觉得自己值得？","今天你有没有坦然接受一个夸奖？"]},
+"03-04":{default:"你会经常对自己说'应该'吗？比如'我应该更努力'、'我应该开心'。",alt:["这些'应该'从哪来的？你真的认同吗？","如果去掉所有的'应该'，你今天会做什么？","今天你有没有对自己说'应该'？试着把它替换成'可以'。"]},
+"03-05":{default:"你是晨型人还是夜猫子？你的生物钟满意吗？",alt:["一天中你最高效和最放松的时刻分别是什么时候？","如果有完全的自由，你会几点睡几点起？","今天你的精力水平怎么样？"]},
+"03-06":{default:"你相信'吸引力法则'吗？或者你相信什么类似的道理？",alt:["你觉得自己是一个能量场的发射器吗？","有没有什么事情让你觉得'念念不忘必有回响'？","今天你把注意力放在了什么上面？"]},
+"03-07":{default:"你对'竞争'的态度是什么？你喜欢竞争吗？",alt:["竞争让你更强大还是更焦虑？","你最大的竞争者是谁？是别人还是自己？","今天有没有感受到竞争的时刻？你的反应是什么？"]},
+"03-08":{default:"身为女性/身边有女性，今天你最想对女性说的一句话是什么？",alt:["你欣赏的女性特质有哪些？","有没有一个女性深刻影响了你的生命？","性别对你的人生体验有什么影响？"]},
+"03-09":{default:"你觉得'自律'给你带来了什么？自律和自由矛盾吗？",alt:["你在哪些方面很自律？哪些方面完全管不住自己？","自律是痛苦的还是快乐的？","今天你做了什么需要自律的事？"]},
+"03-10":{default:"如果必须放弃一样东西——手机、甜食、空调——你会选哪个？",alt:["现代生活中哪些东西你觉得其实可以没有？","如果要过一周没有网络的生活，你觉得自己会怎样？","今天你花了多少时间在屏幕上？满意吗？"]},
+"03-11":{default:"你觉得自己是一个有主见的人吗？容易受人影响吗？",alt:["什么情况下你最容易动摇自己的判断？","有没有一次坚持主见后来证明是对的经历？","今天你有没有坚持自己的想法？"]},
+"03-12":{default:"'幸福'这个字眼对你来说意味着什么？你今天幸福吗？",alt:["幸福是一种状态还是一个瞬间？","什么小事最容易让你感到幸福？","今天有没有哪怕一秒钟你觉得很幸福的时刻？"]},
+"03-13":{default:"你做过的最勇敢的一个决定是什么？",alt:["勇敢和鲁莽的区别在哪里？","有没有一个决定改变了你的人生轨迹？","今天你有没有做出什么需要勇气的小决定？"]},
+"03-14":{default:"无聊对你来说是好事还是坏事？你多久无聊一次？",alt:["你觉得现在的自己还能忍受无聊吗？","无聊的时候你通常做什么？","无聊会不会其实是创造力的前奏？"]},
+"03-15":{default:"你对'消费'的态度是什么？你是冲动型还是计划型？",alt:["最近有没有买了什么东西特别后悔/特别满意的？","消费能带来快乐吗？那种快乐能持续多久？","今天你有没有为了情绪而消费？"]},
+"03-16":{default:"你觉得自己最大的恐惧是什么？你面对过它吗？",alt:["恐惧保护过你吗？还是限制了你？","如果恐惧是一个角色，它长什么样？","今天你有没有感受到恐惧？你选择了面对还是逃避？"]},
+"03-17":{default:"你感觉最'安全'的时刻是什么时候？在哪里？和谁？",alt:["安全感来自外部还是内心？","什么会破坏你的安全感？","今天你感到安全吗？"]},
+"03-18":{default:"你对'原谅'这件事怎么看？你是一个容易原谅的人吗？",alt:["原谅别人和原谅自己，哪个更难？","有没有什么你还没原谅的？不管是别人还是自己。","原谅是不是一定需要和解？"]},
+"03-19":{default:"今天你已经走了多少步？你的身体今天运动了吗？",alt:["你喜欢运动吗？有没有让你享受的运动方式？","身体活动和心理状态之间，你发现了什么关联？","今天你有没有享受身体被使用的感觉？"]},
+"03-20":{default:"如果可以养任何动物做宠物，你会选什么？或者你更喜欢不养？",alt:["你觉得人和动物之间的关系有什么特别的？","你有过和动物相关的难忘经历吗？","如果有宠物，你觉得它眼中的你是什么样的？"]},
+"03-21":{default:"你对'故乡'这个词有什么感觉？你现在离故乡远吗？",alt:["故乡对你来说是地理概念还是情感概念？","你想念故乡的什么？","如果'故乡'是你出生的地方，你觉得自己属于那里吗？"]},
+"03-22":{default:"你喜欢被关注还是更喜欢做旁观者？",alt:["在人群中你通常是什么角色？","关注会让你紧张还是享受？","今天你是被关注的那个人，还是观察者的角色？"]},
+"03-23":{default:"你最近有没有对什么事情感到困惑或迷茫？",alt:["迷茫的时候你会做什么？","你觉得迷茫是必经阶段还是需要尽快解决的状态？","今天的你对什么感到不确定？"]},
+"03-24":{default:"你对自己目前的生活状态满意吗？1到10打几分？",alt:["最让你满意的部分是什么？最不满意的是什么？","如果只能改变一件事来大幅提升满意度，会是什么？","今天你的满意度是多少？为什么？"]},
+"03-25":{default:"有没有一句话或一个道理你曾经不认同，现在却很认同？",alt:["是什么让你改变了想法？","改变想法对你来说是容易还是困难？","最近有没有什么观点你发现自己变了？"]},
+"03-26":{default:"音乐在你生活中扮演什么角色？你最近在听什么？",alt:["有没有一首歌能瞬间改变你的情绪？","你喜欢安静还是背景音乐？","今天你听音乐了吗？感受到了什么？"]},
+"03-27":{default:"如果开一家店，你想开什么店？为什么？",alt:["你理想中的小店是什么样子的？","开店对你来说是一种生活方式还是商业行为？","你觉得自己有'创业基因'吗？"]},
+"03-28":{default:"你觉得'好运气'可以主动争取还是只能被动等待？",alt:["你有没有主动为自己创造过'好运'的机会？","机会来的时候，你是果断抓住还是会犹豫？","今天有没有什么好运气降临？"]},
+"03-29":{default:"春天已经来了，你有没有什么'换季'的心情或计划？",alt:["换季的时候你会整理东西吗？心情也会顺便整理吗？","春天最适合做什么？你有什么春天的仪式感？","今天有没有做点什么迎接春天？"]},
+"03-30":{default:"你和自己的关系怎么样？你是自己最好的朋友吗？",alt:["你会跟自己对话吗？以什么样的口吻？","讨厌自己、接纳自己、喜欢自己——你现在在哪个阶段？","今天你对自己说了什么话？是鼓励的还是批评的？"]},
+"03-31":{default:"三月过去了。这个月有没有哪个时刻让你觉得'值得'？",alt:["三个月过去了，你今年的目标进展如何？","三月教会了你什么？","告别三月，迎接四月——你有什么想说的？"]},
+
+// ═══ 四月 · 清新明快 ═══
+"04-01":{default:"愚人节。你上过最难忘的当是什么？或者你开过的最成功的玩笑？",alt:["幽默感对你来说有多重要？","你容易被骗吗？你是容易相信别人的人吗？","今天有没有发生什么好笑的事？"]},
+"04-02":{default:"你的'自我关怀'方式有哪些？你对自己够好吗？",alt:["疲惫的时候你通常会做什么来恢复？","你觉得'对自己好'和'放纵自己'的区别是什么？","今天你为自己做了什么？哪怕很小的事。"]},
+"04-03":{default:"有没有一个你特别想再见一面的人？如果可以的话。",alt:["人生中有些人来了又走——你怎么看待离别？","哪次离别让你印象最深刻？","今天你有没有想起谁？"]},
+"04-04":{default:"清明节。你想对已故的人或过去的事说些什么？",alt:["关于'失去'，你有什么感悟？","你觉得纪念的意义是什么？","今天你的心里在纪念谁？或者纪念什么？"]},
+"04-05":{default:"你对'旅行'的渴望有多大？如果明天就可以出发，你想去哪？",alt:["你更喜欢一个人旅行还是结伴同行？","旅行中最打动你的一次经历是什么？","如果不能远行，你如何在家附近找到'旅行'的感觉？"]},
+"04-06":{default:"你觉得自己有'天赋'吗？在什么事情上？",alt:["天赋和努力谁更重要？","有没有什么事情你做起来特别顺手？","你有没有浪费过天赋？或者还在寻找天赋？"]},
+"04-07":{default:"如果可以回到任何一个年龄重新来过，你会选几岁？",alt:["你最喜欢自己的哪个年龄段？","你觉得人是越活越好还是越活越累？","现在的你，是小时候想象的样子吗？"]},
+"04-08":{default:"你觉得什么叫做'活明白了'？你活明白了吗？",alt:["'明白'是终点还是过程？","有没有一瞬间你觉得恍然大悟？","智慧可以传递吗？还是只能自己去经历？"]},
+"04-09":{default:"今天有没有什么灵光一闪的想法？哪怕很小。",alt:["你好点子最多的时候是什么状态？洗澡？走路？睡前？","灵感和汗水的关系是什么？","把你的灵感记下来——它可能是什么的种子？"]},
+"04-10":{default:"你对'年龄'这件事焦虑吗？",alt:["年龄对你来说只是一个数字还是有很多含义？","你觉得自己的心理年龄是几岁？","今天你有没有因为年龄而限制了自己做什么？"]},
+"04-11":{default:"今天最让你放松的一件事是什么？",alt:["放松对你来说是自然而然的还是需要刻意练习的？","什么事情能让你忘记时间？","你今天有没有真正放松的时刻？"]},
+"04-12":{default:"你是一个会'囤积'的人吗？不管是物品、信息还是别的。",alt:["囤积背后是什么心理？安全感？匮乏感？","你最近有没有清理过不需要的东西？","轻装上阵——如果要减掉生活的1/3，你会减什么？"]},
+"04-13":{default:"人生中什么东西是你觉得'不能将就'的？",alt:["什么事情上你是完美主义者？","将就是智慧还是妥协？","今天有没有什么事情是你不想将就的？"]},
+"04-14":{default:"花开了。你最喜欢什么花？为什么？",alt:["花让你想到什么？","如果把你比作一种花，是什么花？","今天你看到花了吗？停下来看了吗？"]},
+"04-15":{default:"你觉得自己擅长'开始'还是擅长'坚持'？",alt:["开始一件事容易还是坚持一件事容易？","三分钟热度真的是坏事吗？","有没有什么事情你坚持了很久？动力来源是什么？"]},
+"04-16":{default:"你是一个在社交媒体上活跃的人吗？为什么？",alt:["社交媒体对你的生活是加分还是减分？","不发朋友圈的时候你在做什么？","如果把社交媒体从你的生活中抽走，会怎样？"]},
+"04-17":{default:"你独特的'小怪癖'或者小习惯是什么？",alt:["每个人都有一些只有自己知道的小仪式——你有吗？","你的怪癖是从什么时候开始的？","接受自己的'怪'——它让你成为你。"]},
+"04-18":{default:"最近有没有什么让你感到特别'燃'或者热血沸腾的事？",alt:["什么事情能点燃你的热情？","你多久没有感到热血了？","今天你的热情指数是多少？"]},
+"04-19":{default:"你觉得'善良'和'软弱'的区别在哪里？",alt:["善良需要带锋芒吗？","你是一个善良的人吗？做过的善良的事有哪些？","今天你有没有做出善良的选择？"]},
+"04-20":{default:"谷雨。春天最后一个节气。这个春天你过得好吗？",alt:["春天要结束了，你有什么想对春天说的？","这个春天你收获了什么？","接下来的夏天你最期待什么？"]},
+"04-21":{default:"你一天中最喜欢的时间段是什么时候？为什么？",alt:["早晨、午后、黄昏、深夜——不同时间你有不同的自己吗？","如果可以重新安排一天的作息，你会怎么安排？","今天你最喜欢的是哪个时刻？"]},
+"04-22":{default:"世界地球日。你对'自然'有什么感觉？你多久没有接触自然了？",alt:["走进大自然对你的心情有什么影响？","你觉得自己是自然的一部分吗？","今天你有没有被自然触动到？"]},
+"04-23":{default:"世界读书日。最近在读什么书？或者你最喜欢的书是哪本？",alt:["阅读在你的生活中占什么位置？","有没有一本书改变了你的人生？","比起电子书，你更喜欢纸质书吗？为什么？"]},
+"04-24":{default:"你最'骄傲'的一刻是什么时候？",alt:["骄傲是好事还是坏事？","你为自己的什么感到骄傲？","今天有没有值得骄傲的事？哪怕很小。"]},
+"04-25":{default:"'活在当下'——这句话说起来容易。你今天活在当下吗？",alt:["你容易沉浸在当下还是会一直想着过去或未来？","做什么事情的时候你最容易进入'心流'？","今天有没有完全专注于当下的时刻？"]},
+"04-26":{default:"你曾经想成为什么样的人？现在还想吗？",alt:["儿时的梦想现在还在吗？","人生目标可以改变吗？改变了算不算'背叛'自己？","现在的你，想成为什么样的人？"]},
+"04-27":{default:"你通常怎么面对'失望'？",alt:["期待越多失望越大——你认同吗？","失望的情绪你会憋着还是表达出来？","最近有什么让你失望的事？你如何处理？"]},
+"04-28":{default:"你觉得什么是'对的人'？可以是伴侣、朋友、合作伙伴。",alt:["'对的人'有哪些特质？","你遇到过'对的人'吗？怎么判断的？","今天和谁相处让你觉得'对了'？"]},
+"04-29":{default:"如果不能使用任何电子设备一整天，你会做什么？",alt:["你觉得自己有'屏幕依赖'吗？","没有手机的一天会让你焦虑还是解脱？","如果给自己一个数字戒断日，你想定在哪天？"]},
+"04-30":{default:"四月最后一天。这个月你最想感谢谁？",alt:["这个月谁帮了你？你对谁说过谢谢？","感谢自己——这个月你为自己做了什么值得感谢的事？","告别四月，你想带走什么，留下什么？"]},
+
+// ═══ 五月 · 初夏活力 ═══
+"05-01":{default:"劳动节。你觉得'勤劳'是一种美德吗？还是更向往'悠闲'？",alt:["你是享受工作的人还是享受休息的人？","如果完全不用工作，你会做什么来填满日子？","今天你是劳动了还是休息了？感觉如何？"]},
+"05-02":{default:"你相信'性格决定命运'吗？你觉得自己的性格是什么类型？",alt:["性格可以改变吗？你希望改变自己的什么性格特质？","内向和外向的二元划分够用吗？","你的性格在哪方面帮了你？在哪方面让你吃亏？"]},
+"05-03":{default:"你更喜欢计划好的行程还是说走就走的随性？",alt:["计划给你安全感还是束缚感？","随性会不会变成随便？","今天你是按计划走的，还是临场发挥？"]},
+"05-04":{default:"青年节。你觉得'年轻'是一种状态还是一种年龄？",alt:["什么会让一个人变老？不是年龄上的。","你觉得自己'年轻'吗？","保持年轻的秘诀是什么？"]},
+"05-05":{default:"立夏。夏天来了。夏天让你想到什么？",alt:["你最喜欢夏天的什么？最不喜欢的呢？","夏天有哪些专属于这个季节的记忆？","今天你有感受到夏天的气息吗？"]},
+"05-06":{default:"你上一次熬夜是因为什么？值得吗？",alt:["熬夜对你来说是常态还是偶尔？","什么事情值得你牺牲睡眠？","今天你睡够了吗？感受如何？"]},
+"05-07":{default:"你对自己'外在'的满意程度怎样？",alt:["外表对你来说有多重要？","你有没有为外貌焦虑过？","今天你照镜子的时候，看到了什么？"]},
+"05-08":{default:"母亲节快到了。你和妈妈的关系怎么样？妈妈对你最大的影响是什么？",alt:["关于妈妈，你最深刻的记忆是什么？","你想成为和妈妈一样的父母吗？","今天给妈妈发条消息吧——你想说什么？"]},
+"05-09":{default:"你最好的朋友是谁？你们多久没见了？",alt:["友情和爱情有什么相同和不同？","你的朋友是什么样的？你们因为什么走到一起？","今天你有没有想联系的朋友？"]},
+"05-10":{default:"如果让你向一个完全不了解你的人介绍自己，你会怎么介绍？",alt:["你最想让别人了解你什么？","你的'标签'是什么？你想要这些标签吗？","去掉所有社会角色，你是谁？"]},
+"05-11":{default:"有没有什么事情你曾经深信不疑，现在却不再相信了？",alt:["是什么让你改变信念？","失去一个信念是好事还是坏事？","你现在最相信的是什么？"]},
+"05-12":{default:"你对'竞争'怎么看？你在生活中感受到的竞争压力大吗？",alt:["竞争让你更努力还是更焦虑？","你会主动避免竞争吗？","今天你有没有跟谁比较过自己？"]},
+"05-13":{default:"'日常'这个词给你什么感觉？你喜欢日常还是厌倦日常？",alt:["日常是平淡的还是安稳的？","你如何在日常中找到新鲜感？","今天的日常中有什么值得记录的小事？"]},
+"05-14":{default:"如果让你给自己写一份简历，除了工作学历之外，你会写什么？",alt:["你的'隐藏技能'是什么？","什么事情是你简历上写不出来的但对你很重要的？","如果用三个词概括你这个人，会是什么？"]},
+"05-15":{default:"天气越来越热了。炎热会影响你的情绪吗？",alt:["你最受不了夏天的什么？","热天最适合做什么？","今天天气如何？你感觉如何？"]},
+"05-16":{default:"你有没有什么'精神支柱'——可以是信仰、爱好或者一个人。",alt:["是什么支撑你度过困难的时光？","你的精神支柱稳定吗？","今天你有没有靠近你的精神支柱？"]},
+"05-17":{default:"你觉得自己在'好好生活'吗？'好好生活'对你来说是什么样子的？",alt:["生存和生活的区别在哪里？","你理想中的一天是什么样子的？","今天的生活质量如何？"]},
+"05-18":{default:"有没有什么地方你一直想去但还没去？",alt:["旅行清单上的第一名是哪里？","阻碍你去的是时间、金钱还是别的？","如果不行远行，你所在的城市有哪些地方你还没探索？"]},
+"05-19":{default:"你对'等待'这件事有耐心吗？最近有没有在等什么？",alt:["等待的过程你在想什么？","值得等待的东西有哪些？","焦虑的等待和期待的等待，区别在哪？"]},
+"05-20":{default:"520。今天宜表白。你有多久没有对人表达过情感了？",alt:["表达爱对你来说是容易还是困难？","你更习惯用哪种方式表达——语言、行动、还是其他？","今天对你在乎的人说点什么吧。"]},
+"05-21":{default:"小满。'小满'即知足。你现在对什么感到'小满'？",alt:["知足和躺平有区别吗？","什么时候你觉得'够了'，什么时候你觉得'不够'？","今天有没有什么让你觉得刚刚好？"]},
+"05-22":{default:"你觉得自己做事是凭直觉还是凭理性分析多？",alt:["直觉和理性在什么情况下会打架？","你做过最'不理性'但非常正确的决定是什么？","今天你做决定时更多用了头还是心？"]},
+"05-23":{default:"你是一个容易被情绪影响的人吗？还是情绪很稳定？",alt:["情绪来了你会怎么处理？","你觉得负面情绪有存在的价值吗？","今天你的情绪波动了吗？因为什么？"]},
+"05-24":{default:"今天有没有什么让你觉得'世界真小'或者'缘分真奇妙'的事？",alt:["你相信缘分吗？","有没有不可思议的巧合发生在你身上？","今天有没有偶然的事让你感到奇妙？"]},
+"05-25":{default:"你觉得自己最有魅力的时候是什么状态？",alt:["魅力等于外表吗？","你在什么人面前最有魅力？","今天你觉得自己有魅力吗？"]},
+"05-26":{default:"如果可以时间旅行，你更想回过去还是去未来？",alt:["未来看得太清楚会不会无聊？","过去改不了是不是反而是一种慈悲？","如果只能选一个——看透未来还是记住过去？"]},
+"05-27":{default:"你最擅长的事情是什么？这件事让你快乐吗？",alt:["擅长的事和喜欢的事是同一件吗？","有没有什么事情你不擅长但非常享受？","今天你有没有用到你的擅长？"]},
+"05-28":{default:"你有没有感觉自己被困住的时候？是什么困住了你？",alt:["困住你的更多是外部条件还是内心想法？","有过挣脱困境的经历吗？怎么做到的？","今天的你感觉自由还是被困？"]},
+"05-29":{default:"你上一个发自内心的大笑是因为什么？",alt:["什么类型的幽默最容易戳中你？","你身边有没有特别好笑的朋友？","今天有什么东西让你笑了？"]},
+"05-30":{default:"五年后你希望自己住在什么样的地方？和谁？",alt:["你理想的生活环境是怎样的？城市还是乡村？","家对你来说最重要的是什么？","今天你待的地方让你满意吗？"]},
+"05-31":{default:"五月最后一天。回顾这个月，你觉得时间花得值吗？",alt:["五月你完成了什么？","五月有什么让你感到温暖的时刻？","对六月说一句话吧。"]},
+
+// ═══ 六月 · 盛夏光年 ═══
+"06-01":{default:"儿童节。你内心的小孩还在吗？今天你想带TA做什么？",alt:["童年的哪个瞬间你最怀念？","你觉得自己什么时候'不再是小孩'了？","如果允许自己做一天小孩，你会怎么过？"]},
+"06-02":{default:"你觉得自己是一个自信的人吗？自信来自哪里？",alt:["自信是天生的还是后天建立的？","在什么方面你最自信？在什么方面最不自信？","今天你的自信水平怎么样？"]},
+"06-03":{default:"'语言是有力量的'。最近有没有什么话温暖了你或伤了你？",alt:["你有没有被一句话改变过？","你对自己说的话是温柔的还是苛刻的？","今天你对别人说了什么？对别人产生了什么影响？"]},
+"06-04":{default:"你害怕被人'看透'吗？还是渴望被真正地了解？",alt:["被人了解的渴望和怕被看穿的恐惧——哪一个更强？","谁最了解你？这种了解让你舒服吗？","今天你有没有向谁展现过真实的自己？"]},
+"06-05":{default:"世界环境日。你怎么看待人类和地球的关系？",alt:["环保在你生活中的优先级有多高？","你做过哪些对环境友好的小事？","你觉得个人在环保中能起多大作用？"]},
+"06-06":{default:"芒种。播种与收获的季节。你最近在'播种'什么？",alt:["你有什么正在耕耘的事情吗？","收获需要等待——你对等待的态度是什么？","今天你感到充实吗？"]},
+"06-07":{default:"你的'睡前仪式'是什么？你睡得好吗？",alt:["睡前你通常在做什么？刷手机还是看书？","有没有帮助入睡的小技巧？","昨晚你睡得好吗？做了什么梦？"]},
+"06-08":{default:"今天你有没有'动手'做了什么？比如做菜、修理、手作。",alt:["手工劳动的满足感来自哪里？","你喜欢用双手创造的感觉吗？","今天有没有离开屏幕，做点实体的东西？"]},
+"06-09":{default:"如果让你做一天老师，你会教什么？",alt:["你从谁那里学到了最重要的一课？","教别人的时候你自己是不是也学到了？","你不一定站在讲台上——每个人都可以是老师。"]},
+"06-10":{default:"你觉得人生中最不能将就的三件事是什么？",alt:["在什么事情上你绝对不愿意妥协？","将就是一种成熟还是无奈？","今天有没有什么事情你觉得'差不多就行了'？"]},
+"06-11":{default:"假设中了彩票大奖，你第一时间会做什么？之后呢？",alt:["巨额财富会改变一个人吗？","你觉得自己有了钱之后会变成什么样？","不中奖的情况下，你现在能做那些事吗？"]},
+"06-12":{default:"你的'低谷期'是什么样子的？你是怎么走出来的？",alt:["人生最低谷的时候是什么支撑着你？","回头看你经历过的困难，有什么感悟？","如果你正在经历低谷——你想对自己说什么？"]},
+"06-13":{default:"'边界感'——你觉得在关系中重要吗？你的边界在哪里？",alt:["你擅长维护自己的边界吗？","有没有人曾经越过了你的边界？你是怎么处理的？","今天你有没有需要捍卫边界的事？"]},
+"06-14":{default:"你觉得自己在别人眼中是什么样的人？跟你自己认为的一致吗？",alt:["别人对你的评价准吗？","有没有哪次别人对你的看法让你很意外？","如果问问身边的人，你觉得他们会怎么形容你？"]},
+"06-15":{default:"你对父亲的印象最深刻的是什么？（父亲节前后）",alt:["父亲在你的生命中扮演了什么角色？","你从父亲身上继承了什么？","你和父亲的关系经历了怎样的变化？"]},
+"06-16":{default:"今天有没有什么你觉得'如果错过了会很可惜'的事？",alt:["人生中哪些事是不容错过的？","你曾经错过了什么让你至今遗憾？","今天有什么值得珍惜的？"]},
+"06-17":{default:"你心里有没有一个'如果当时我…就好了'？",alt:["后悔是一种有用的情绪吗？","如果人生不能重来，后悔的意义是什么？","与其后悔过去，不如改变现在——你今天能做点什么？"]},
+"06-18":{default:"购物车里有放了很久但没买的东西吗？为什么不买？",alt:["你购物时是果断型还是纠结型？","物质能带来多少快乐？持续多久？","最近有没有买了觉得很值的东西？"]},
+"06-19":{default:"你会不会有时候觉得自己在'表演'生活？比如在社交媒体上。",alt:["真实和表演的界限在哪里？","你在什么样的人面前最真实？","今天你有没有不用'表演'的时刻？"]},
+"06-20":{default:"你最后一次尝试'突破自己'是什么时候？",alt:["突破自己一定意味着做不擅长的事吗？","你有过什么'豁出去了'的经历？","今天你有没有稍微跨出舒适区？"]},
+"06-21":{default:"夏至。一年中最长的白天。这多出来的日光你想用来做什么？",alt:["白天长意味着什么？你有什么想趁天光多做点的事？","如果用这最长的一天来完成一件事，会是什么？","今天你享受了日光吗？"]},
+"06-22":{default:"你觉得自己是一个'有故事'的人吗？如果把你的人生拍成电影，会是什么类型？",alt:["你人生中最戏剧性的转折是什么？","如果选一个人来演你，你希望是谁？","今天的生活属于电影里的哪一幕？"]},
+"06-23":{default:"你最喜欢自己身上的哪一个特质？",alt:["这个特质是从什么时候开始有的？","它帮过你什么？","今天有没有发挥这个特质？"]},
+"06-24":{default:"你有多久没有'什么都不做'了？就只是发呆。",alt:["发呆、放空对你来说是奢侈还是浪费时间？","你上一次什么都不做是什么时候？什么感觉？","今天给不给自己5分钟，什么都不做？"]},
+"06-25":{default:"如果有机会重来，你会选择和现在一样的人生路径吗？",alt:["如果有平行宇宙，另一个你正在过着什么样的生活？","你的每一个选择都把你带到了现在——你满意吗？","后悔和感恩可以共存吗？"]},
+"06-26":{default:"你觉得'天赋'和'努力'，在你的经历中各占了多少比重？",alt:["你有过'努力也没有用'的感觉吗？","在什么事情上你觉得自己确实有点天赋？","今天你有没有在什么事情上付出了努力？"]},
+"06-27":{default:"如果用颜色来形容你今天的感受，是什么颜色？",alt:["颜色和情绪之间的关联——你觉得自己有联觉吗？","如果今天是灰色——是什么让今天不够鲜艳？","如果今天是彩色的——哪些颜色在跳舞？"]},
+"06-28":{default:"你有没有一个反复出现的烦恼？它可能在告诉你什么？",alt:["重复出现的问题是不是意味着你还没学会某个课题？","你通常怎么面对'老问题'？","与其回避，不如正视——今天试着写写。"]},
+"06-29":{default:"你觉得自己在群体中通常扮演什么角色？你喜欢这个角色吗？",alt:["你是领导者、支持者、观察者还是气氛组？","这个角色是你主动选的还是不知不觉形成的？","今天在人群中你的角色是什么？"]},
+"06-30":{default:"半年过去了。回顾这六个月，你的年度计划完成了多少？",alt:["上半年最让你骄傲的是什么？最遗憾的是什么？","下半年的三个目标是什么？","给自己上半年的努力打个分吧。"]},
+
+// ═══ 七月 · 盛夏光年 ═══
+"07-01":{default:"下半年第一天。你对接下来六个月最大的期待是什么？",alt:["如果上半年不太满意，下半年你想做什么改变？","给自己写一个下半年的心愿。","今天有什么象征性的'重新开始'？"]},
+"07-02":{default:"你是那种'越挫越勇'的人，还是挫折会让你消沉很久？",alt:["面对困难你的第一反应是什么？","挫折有没有让你变得更强大？举例说说。","最近有没有什么挫折？你怎么应对的？"]},
+"07-03":{default:"如果你可以知道关于你未来的一件事，你想知道什么？",alt:["知道未来会不会反而让人焦虑？","不确定性的魅力在哪里？","对于未来，你选择乐观还是审慎？"]},
+"07-04":{default:"天气热到不想动的时候，你会做什么来消暑？",alt:["炎热的夏天有没有什么美好的记忆？","西瓜、空调、游泳池——夏天的幸福感来自哪里？","今天你做了什么来对抗炎热？"]},
+"07-05":{default:"你有过'说走就走'的经历吗？去了哪里？感觉怎么样？",alt:["冲动的旅行和计划好的旅行，哪个更让你心动？","如果现在给你三小时收拾行李出发，你会？","今天有没有想要出走的冲动？"]},
+"07-06":{default:"你总结过自己的'人生经验'吗？如果只能分享一条，是什么？",alt:["这条经验是你从什么事中学到的？","有什么道理你希望自己更早明白？","如果有人问你'人生该怎么过'，你会怎么回答？"]},
+"07-07":{default:"小暑。一年中最热的时候快到了。'炎热'让你想到什么？",alt:["极端天气会让你反思什么？","热得受不了的时候，你是怎么熬过来的？","夏天最适合做的三件事是什么？"]},
+"07-08":{default:"你觉得'羡慕'和'嫉妒'的区别在哪里？你容易羡慕别人吗？",alt:["羡慕可以变成动力吗？还是会变成消耗？","你最近有没有羡慕过谁？羡慕什么？","别人羡慕你吗？你觉得他们羡慕你什么？"]},
+"07-09":{default:"你人生中最重要的'巧合'是什么？",alt:["有没有什么偶然的相遇改变了你的生活？","巧合背后有没有什么你愿意相信的东西？","今天有没有什么小小的巧合发生？"]},
+"07-10":{default:"'断舍离'你试过吗？对生活有什么影响？",alt:["最难扔掉的是什么东西？为什么？","简化生活让你更快乐吗？","如果给你的生活做一次彻底的断舍离，你会从哪里开始？"]},
+"07-11":{default:"在你看来，什么是'酷'？你想成为酷的人吗？",alt:["酷是外在的态度还是内在的从容？","你身边最酷的人是谁？为什么？","今天的你酷吗？"]},
+"07-12":{default:"今天你有没有注意到自己的身体？它今天舒服吗？",alt:["你有多久没有关注身体的感觉了？","身体在抗议的时候你听得见吗？","今天身体的哪个部位最需要你的关注？"]},
+"07-13":{default:"你有没有一个'想见但还没见'的人的清单？上面都有谁？",alt:["为什么还没见？距离？时间？还是不敢？","如果只能见一个，你最想见谁？","这个暑假能不能安排一次见面？"]},
+"07-14":{default:"如果一年只能看一部电影，你会选已经看过的还是没看过的？",alt:["为什么有些电影我们愿意反复看？","电影对你来说意味着什么？娱乐？启发？逃避？","最近有没有什么电影打动你？"]},
+"07-15":{default:"你做过的最'不按常理出牌'的事是什么？",alt:["打破常规让你兴奋还是不安？","社会规则中哪些你认同？哪些你想打破？","今天你有没有打破任何常规？"]},
+"07-16":{default:"如果让你开一门课，关于你最擅长的领域，课程名叫什么？",alt:["你会怎么教？实践为主还是理论为主？","你的第一批学生会是谁？","你觉得自己有'教育者'的特质吗？"]},
+"07-17":{default:"距离感和亲密感——你更喜欢哪种？在什么关系中？",alt:["你觉得最舒服的社交距离是怎样的？","太近了你害怕什么？太远了又害怕什么？","今天你和他人的距离合适吗？"]},
+"07-18":{default:"你是一个能接受批评的人吗？什么样的批评最让你受不了？",alt:["批评和反馈的区别是什么？","最近有没有什么批评让你受益？","今天你有没有接受批评或反馈？"]},
+"07-19":{default:"今天的云好看吗？你多久没有抬头看天���？",alt:["云的变化会让你想到什么？","天空对你来说意味着什么？","今天抬头看的时候，你看到了什么？"]},
+"07-20":{default:"你有那种'不提就没事，一提就难过'的事吗？",alt:["为什么有些情绪会被压在深处？","情绪需要被表达吗？不表达会怎样？","今天有没有什么情绪你不想提但一直在那里？"]},
+"07-21":{default:"你相信'真爱'吗？你对爱情的态度是什么？",alt:["爱是选择还是感觉？","你觉得一生可以爱几个人？","你对爱情的定义经历过什么变化？"]},
+"07-22":{default:"大暑。最热的时候。你是怎么让自己'冷静'下来的？",alt:["除了物理降温，心里烦躁的时候你怎么做？","冷静和冷漠的区别是什么？","今天你有冷静面对什么事吗？"]},
+"07-23":{default:"有没有什么事情你一直坚持了很多年？为什么坚持？",alt:["坚持过程中最难的是什么？","坚持给你带来了什么？","如果明天不再坚持了，会怎样？"]},
+"07-24":{default:"你觉得'不懂就问'和'独立思考'矛盾吗？",alt:["求助对你来说是容易还是困难？","什么时候该求助，什么时候该自己琢磨？","今天你有没有向人求助或者独立解决问题？"]},
+"07-25":{default:"如果把你的人生比作一本书，现在写到第几章了？这一章叫什么？",alt:["上一章是什么内容？下一章你打算怎么写？","你是自己人生的作者吗？还是有时候觉得是配角？","今天这一页写了什么？"]},
+"07-26":{default:"什么东西能一秒治愈你的坏心情？",alt:["你的'快乐清单'上有什么？","有没有哪个味道/声音/画面能瞬间改变你的状态？","今天有没有遇到什么治愈你的瞬间？"]},
+"07-27":{default:"你相信星座/MBTI/性格测试吗？它们对你的自我认知有帮助吗？",alt:["标签帮助你理解自己还是限制了你？","你觉得人是可以用几个维度描述的吗？","你觉得这些测试为什么这么流行？"]},
+"07-28":{default:"你最近有没有哪件事做得比预期的好？",alt:["被自己惊喜到是什么感觉？","你容易低估自己吗？","今天有没有什么事你做得不错？夸夸自己。"]},
+"07-29":{default:"如果现在的你遇到十年前的你，你会对TA说什么？",alt:["十年前的你在烦恼什么？现在看还重要吗？","十年前的决定成就了今天的你——后悔吗？感激吗？","你希望十年后的你遇到现在的你时，TA会说什么？"]},
+"07-30":{default:"你觉得'日常'和'特别'的关系是什么？特别的日子需要日常的对比吗？",alt:["仪式感对你来说重要吗？","如何让普通的一天变得特别？","今天普通吗？还是有点特别？"]},
+"07-31":{default:"七月最后一天。这个夏天过了一半了，感觉怎么样？",alt:["这个七月最热的一天你在做什么？","这个月有没有什么让你印象深刻的事？","给七月和半个夏天做个总结吧。"]},
+
+// ═══ 八月 · 盛夏余韵 ═══
+"08-01":{default:"八月了。暑假过半（或者暑假记忆）。你小时候暑假最喜欢做什么？",alt:["暑假对你来说是自由的象征吗？","如果可以拥有一个完全自由的八月，你想做什么？","今天有没有暑假的感觉？"]},
+"08-02":{default:"你夏天最喜欢吃什么？有没有什么食物专属夏天的记忆？",alt:["味觉能带你回到过去吗？","有什么食物你只在夏天吃？","今天吃了什么让你感到夏天？"]},
+"08-03":{default:"你一般会为什么事情失眠？睡不着的时候你会做什么？",alt:["失眠的夜晚你都在想什么？","有什么办法帮你入睡？","昨晚你睡得好吗？"]},
+"08-04":{default:"你觉得什么样的人叫'有趣'？你觉得自己有趣吗？",alt:["有趣可以被培养吗？","无聊的反面是有趣还是充实？","今天有没有遇到有趣的人或事？"]},
+"08-05":{default:"你有没有一件坚持超过五年的爱好？是什么？",alt:["爱好在你的生活中占什么位置？","忙起来的时候你会舍弃爱好吗？","如果没有任何爱好了，你觉得自己会变成什么样？"]},
+"08-06":{default:"你的'小确幸'通常是什么？今天有没有遇到？",alt:["微小的幸福和大大的快乐，哪个更持久？","你更容易在什么事情上发现小确幸？","今天的小确幸是什么？"]},
+"08-07":{default:"立秋。但天还热着。你对'秋天'有什么期待？",alt:["秋天让你想到什么？金黄的树叶？凉爽的风？","换季对你意味着什么？","站在夏秋之交，你有什么感受？"]},
+"08-08":{default:"你觉得自己善于表达吗？语言表达、文字表达、肢体表达？",alt:["你有过'词不达意'的沮丧吗？","文字和语言哪个更能表达你？","今天你有没有成功地表达了自己？"]},
+"08-09":{default:"如果可以回到任意一个年龄并且保留现在的记忆，你想回到几岁？",alt:["你想改变什么吗？还是只是想重新体验？","带着现在的智慧回去，你会怎么做？","失去的经历会变成什么样？"]},
+"08-10":{default:"你有没有一个'精神故乡'？不一定是你出生的地方。",alt:["什么地方让你有归属感？","你觉得归属感来自人还是地方？","今天你感觉'属于'哪里？"]},
+"08-11":{default:"你对自己目前的经济状况满意吗？有财务方面的目标吗？",alt:["钱和幸福感之间的关系你体验到了什么？","你的消费观经历过什么变化？","今天有没有关于钱的思考？"]},
+"08-12":{default:"流星雨的季节。你见过流星吗？许过愿吗？",alt:["你相信许愿这件事吗？","如果今天有流星划过，你会许什么愿？","星空对你来说意味着什么？"]},
+"08-13":{default:"你的'初心'还在吗？有没有什么东西是你一直没变的？",alt:["初心一定是好的吗？","变了就一定是不好吗？","今天你做的事和你的初心一致吗？"]},
+"08-14":{default:"你喜欢拍照吗？拍照对你来说是记录还是分心？",alt:["照片能留住什么？留不住什么？","你有没有一张最珍贵的照片？","今天有没有拍下什么你想记住的画面？"]},
+"08-15":{default:"如果让你彻底改变现在的生活方式，你最舍不得什么？",alt:["什么构成了你的'生活方式'？","变化对你来说是刺激还是恐惧？","今天的生活中什么让你觉得'这就是我'？"]},
+"08-16":{default:"你觉得自己有'讨好型'倾向吗？在什么情况下你会委屈自己？",alt:["让别人高兴对你来说有多重要？","讨好和善良的边界在哪里？","今天你有没有为了别人而委屈自己？"]},
+"08-17":{default:"如果在街上遇到一个'人生导师'，可以问他一个问题，你会问什么？",alt:["你目前人生中最大的困惑是什么？","如果有答案了，你的生活会有什么变化？","也许你不需要导师——你内心可能已经有了答案。"]},
+"08-18":{default:"你觉得什么算'浪费时间'？什么事算'花时间值得'？",alt:["谁定义了什么是有价值的？","刷手机算浪费时间吗？发呆呢？","今天你'浪费'时间了吗？那真的是浪费吗？"]},
+"08-19":{default:"你上一件半途而废的事是什么？为什么放弃了？",alt:["放弃一定是失败吗？","有没有什么事情放弃之后反而让你轻松？","今天有没有想过放弃什么？"]},
+"08-20":{default:"你相不相信'每一个人来到你生命中都是有原因的'？",alt:["有没有什么人让你觉得'遇到你是我的幸运'？","那些伤害过你的人——他们教会了你什么？","今天有没有人让你觉得'遇见真好'？"]},
+"08-21":{default:"你有没有自己的'座右铭'？或者很喜欢的格言？",alt:["这句话从哪来？对你为什么重要？","有没有一句话改变了你的人生？","如果给今天选一句文案，是什么？"]},
+"08-22":{default:"你觉得自己是'宅'的人还是'户外'的人？",alt:["宅在家最舒服的是什么？","出去走走最享受的是什么？","今天你是宅了还是出去了？感觉如何？"]},
+"08-23":{default:"处暑。暑气渐消。夏天要结束了——你有什么想对夏天说的？",alt:["这个夏天最难忘的瞬间是什么？","夏天的结束让你伤感还是期待秋天？","告别夏天的方式是什么？"]},
+"08-24":{default:"你上一次对某件事感到'着迷'是什么时候？是什么事？",alt:["着迷和普通喜欢有什么区别？","你容易对事物产生深度兴趣吗？","今天有没有什么事情让你想多了解一点？"]},
+"08-25":{default:"如果让你给自己取一个'化名'或笔名，你会取什么？",alt:["名字和身份之间的关系是什么？","换一个名字会让你感觉自己不一样吗？","你的真名你满意吗？它承载了什么？"]},
+"08-26":{default:"你觉得'独特性'重不重要？你觉得自己独特吗？",alt:["每个人都独特——但独特一定好吗？","你和别人最大的不同是什么？","做自己和从众——你更倾向于哪个？"]},
+"08-27":{default:"你收到过最好的建议是什么？是谁给的？",alt:["为什么这个建议这么好？你行动了吗？","你给别人最好的建议是什么？","今天有没有听到什么好的建议？"]},
+"08-28":{default:"你觉得自己脾气好吗？什么最容易激怒你？",alt:["生气的时候你通常会做什么？","愤怒对你来说是动力还是破坏？","今天你有没有生气？怎么处理的？"]},
+"08-29":{default:"如果可以消除一种负面情绪，你会选哪一种？",alt:["恐惧、愤怒、悲伤、焦虑、嫉妒——你会先消除哪个？","如果所有负面情绪消失了，你还会珍惜正面情绪吗？","负面情绪存在的意义是什么？"]},
+"08-30":{default:"你是一个'计划型'的人吗？周末你会做计划还是随心所欲？",alt:["做计划让你更有掌控感还是更多焦虑？","不做计划的一天通常会怎么样？","这个周末你有什么打算？"]},
+"08-31":{default:"八月结束了。这个夏天教会了你什么？",alt:["如果用一个词形容这个八月，是什么？","暑假/夏天结束的心情是怎样的？","九月——新开始。你有什么想开始的？"]},
+
+// ═══ 九月 · 秋高气爽 ═══
+"09-01":{default:"九月了。秋天和开学的季节。你还记得开学的第一天吗？",alt:["开学对你来说是兴奋还是焦虑？","如果可以重新上学，你会选什么专业？","九月给你什么感觉？新的开始？还是告别夏天？"]},
+"09-02":{default:"你觉得自己是一个'好学生'吗？在学习/工作中有好奇心吗？",alt:["终身学习对你来说是必须还是选择？","最近有没有学什么让你兴奋的东西？","今天你学了吗？"]},
+"09-03":{default:"你最常用的App是什么？这个App为什么吸引你？",alt:["你每天花最多时间在哪个App上？","如果删掉它，你的生活会怎样？","今天你刷了多少时间？用于什么？"]},
+"09-04":{default:"你觉得自己最大的'软肋'是什么？",alt:["软肋让你更人性还是更脆弱？","你最容易被什么打动或动摇？","了解自己的软肋后，你选择保护它还是克服它？"]},
+"09-05":{default:"有没有一个地方，你一走进去就感觉'到了'？",alt:["这样的地方在哪里？为什么让你有这种感觉？","你有没有自己的'第三空间'——不是家也不是工作的地方？","今天去了什么地方？感觉如何？"]},
+"09-06":{default:"你对自己现在的'圈子'满意吗？",alt:["圈子对你来说是支持还是限制？","你希望扩大还是缩小自己的社交圈？","今天你和圈子里的谁互动了？"]},
+"09-07":{default:"白露。天气转凉。秋天让你想到什么？",alt:["秋天的光线、气味、温度——你有没有特别喜欢的秋日元素？","秋意渐浓时，你会做什么应景的事？","今天有没有感受到秋意？"]},
+"09-08":{default:"如果你可以开一个播客/视频频道，主题是什么？",alt:["你想和世界分享什么？","如果你有听众，你希望他们从你这里得到什么？","什么话题你能滔滔不绝地聊？"]},
+"09-09":{default:"你觉得'内卷'和'躺平'之外有没有第三条路？你在走哪条？",alt:["努力和过度努力的界限在哪里？","躺平是消极还是智慧？","今天你的状态是卷、平、还是别的？"]},
+"09-10":{default:"教师节。你生命中最重要的'老师'是谁？不一定是学校里的。",alt:["什么人对你的影响最深？","你从他们身上学到了什么？","你有没有做过别人的'老师'？"]},
+"09-11":{default:"有没有什么事情困扰了你很久，但你一直没有面对？",alt:["回避短期舒服，长期呢？","有什么是你知道该做但一直没做的？","今天有没有勇气面对一下？哪怕只是想一想。"]},
+"09-12":{default:"你觉得自己'靠谱'吗？在什么事情上别人可以完全信任你？",alt:["靠谱是一种品质还是一种能力？","你身边最靠谱的人是谁？","今天你做到了什么承诺？"]},
+"09-13":{default:"你觉得'老去'最让你害怕的是什么？",alt:["有没有哪个老年人在你生命中让你重新认识了老年？","青春的价值到底是什么？","如果能优雅地老去，那是什么样的？"]},
+"09-14":{default:"你喜欢过节吗？中秋节快到了。对你来说节日意味着什么？",alt:["节日是团圆还是负担？","你过得最有仪式感的一个节日是什么节？","中秋你想怎么过？"]},
+"09-15":{default:"你今天说了'不'吗？如果没有，有什么是你想说'不'却没说出口的？",alt:["说不的能力有多重要？","什么情况下说不最难？","最近一次坚定说不的经历是什么？"]},
+"09-16":{default:"你能不能接受自己的平庸？或者说你是否觉得自己不平庸？",alt:["平庸可怕吗？","你觉得大多数人是平庸的吗？","做普通人意味着什么？这有什么不好？"]},
+"09-17":{default:"如果被外星人带走去参观他们的星球，你会带上哪三样东西？",alt:["这三样东西代表了你什么？","给外星人介绍地球——你会从什么说起？","你对未知的态度是好奇还是恐惧？"]},
+"09-18":{default:"你上一次感受到'压力'是什么时候？你的压力应对方式健康吗？",alt:["压力大的时候身体会有什么反应？","你和压力的关系怎么样？","今天压力水平如何？做了什么来缓解？"]},
+"09-19":{default:"如果让你写一句墓志铭，你会写什么？（别怕，这只是一个思考实验）",alt:["你希望别人怎么记住你？","墓志铭是你活过的证据还是对他人的话？","活着的时候能不能活出墓志铭的样子？"]},
+"09-20":{default:"你有没有发现自己在重复某种'模式'？比如总是遇到同一类人、同一类问题。",alt:["模式从哪里来？","打破模式需要什么？","你希望打破什么模式？"]},
+"09-21":{default:"你的手机相册里最多的照片类型是什么？为什么？",alt:["照片记录了你生活的哪些面向？","翻看旧照片会让你有什么感觉？","今天拍了什么？"]},
+"09-22":{default:"秋分。昼夜平分。你的生活中有没有什么需要'平衡'的？",alt:["工作和生活平衡了吗？","社交和独处平衡了吗？","什么方面你觉得严重失衡了？"]},
+"09-23":{default:"你觉得自己有第六感吗？有没有过'预感成真'的经历？",alt:["直觉可以被训练吗？","理智和直觉谁更可靠？","今天你的直觉有没有告诉你什么？"]},
+"09-24":{default:"假如你的生活是一本书，现在读到的这一页写的是什么？",alt:["翻过这一页，下一页你想写什么？","你愿意让别人读你这本书吗？","这本书的结局重要吗？"]},
+"09-25":{default:"你有没有什么'人生清单'？比如死前要做的100件事。",alt:["你清单上的第一条是什么？","有没有已经完成的？划掉的那一刻什么感觉？","今天有没有做什么可以帮你划掉一项？"]},
+"09-26":{default:"你最近有没有什么需要做决定的事？犹豫的点在哪里？",alt:["做决定对你来说是困难还是容易？","什么信息缺失让你无法决定？","如果必须今天决定，你会怎么选？"]},
+"09-27":{default:"今天你做了什么让自己'不舒服'的事？或者完全在舒适区里？",alt:["有时候不舒服是成长的前兆——你同意吗？","主动选择不舒服和被动承受——差别在哪？","今天你有刻意跳出舒适区吗？"]},
+"09-28":{default:"你对'政治/社会议题'关心吗？你觉得个体能改变社会吗？",alt:["你觉得关心社会是义务还是选择？","什么社会议题最触动你？","你觉得自己能做什么？哪怕很小。"]},
+"09-29":{default:"你的'能量来源'是什么？做什么事让你感觉充满电？",alt:["什么事最消耗你的能量？","你给自己充电的频率够吗？","今天做了什么来给自己充电？"]},
+"09-30":{default:"九月结束。秋天过了一半。这个秋天你有什么收获？",alt:["九月的你比八月的你进步了什么？","这个月最温暖的时刻是什么？","十月见——你想对十月说什么？"]},
+
+// ═══ 十月 · 深秋沉思 ═══
+"10-01":{default:"国庆节。你对'祖国'或者你生长的地方有什么情感？",alt:["你对家乡有什么复杂的感情？","什么是'家国情怀'？你有吗？","今天国庆你是休息、旅行还是别的？"]},
+"10-02":{default:"你相信有'来生'吗？或者你相信人死后还有意识吗？",alt:["对死亡的看法如何影响你活着的方式？","你有没有思考过自己的死亡？","有限的生命让你更珍惜什么？"]},
+"10-03":{default:"你最近有没有和谁吵过架或者争执过？因为什么？后来呢？",alt:["冲突对你来说意味着什么？","你在冲突中通常是什么角色？","冲突可以是建设性的吗？"]},
+"10-04":{default:"如果你要做一年志愿者，你想去做什么？去哪里？",alt:["帮助别人给你什么感觉？","有没有什么公益议题最接近你的心？","今天你有没有帮到别人？"]},
+"10-05":{default:"今天的天空是什么颜色？今天你觉得自己是什么颜色？",alt:["如果今天是透明色——你感觉如何？","如果今天是彩虹色——发生了什么？","用一种颜色标记今天。"]},
+"10-06":{default:"你最擅长的沟通方式是什么？书面还是口头？",alt:["文字表达和口头表达哪个让你更自在？","有没有沟通失败让你印象深刻的经历？","今天有没有一次成功的沟通？"]},
+"10-07":{default:"你童年最快乐的记忆是什么？闭上眼睛能回到那个画面吗？",alt:["童年快乐的本质是什么？纯粹？简单？","你从童年学会了什么？","今天的你有什么是童年时想象不到的？"]},
+"10-08":{default:"寒露。天气真的凉了。'冷'让你想到什么？",alt:["冷天最适合做什么？","寒冷让你更想靠近别人还是更想自己待着？","一杯热饮、一条毯子——你的秋冬温暖清单？"]},
+"10-09":{default:"如果有一个人可以替你做一天决定，你希望是谁？或者你不需要？",alt:["把决定权交出去是解脱还是恐惧？","你最不擅长决定什么？","今天做了什么决定？后悔吗？"]},
+"10-10":{default:"你觉得自己是'勇敢面对'型还是'回避等待'型？",alt:["面对需要勇气，回避需要什么？","在什么情况下回避是更好的策略？","今天有没有什么你选择面对了？"]},
+"10-11":{default:"你对自己的价值观清晰吗？什么事情对你来说是'不可妥协'的？",alt:["你的价值观从哪来？家庭？经历？社会？","有没有什么价值观你以前不同意的现在同意了？","今天有没有什么事情挑战了你的价值观？"]},
+"10-12":{default:"你每天起床的动力是什么？有吗？",alt:["每天叫醒你的是什么——闹钟、责任、还是期待？","如果没有动力醒来，可能是什么问题？","今天你为什么起床？"]},
+"10-13":{default:"你最喜欢什么类型的礼物？送礼物和收礼物哪个让你更开心？",alt:["礼物重要的是心意还是实用性？","最难忘的一份礼物是什么？","你最近送了谁礼物？为什么？"]},
+"10-14":{default:"你觉得'死亡'是一个禁忌话题吗？你愿意和别人讨论死亡吗？",alt:["避谈死亡是不是让我们更恐惧它？","你有想过自己的葬礼吗？","意识到死亡让生活更有意义吗？"]},
+"10-15":{default:"你最近有没有在什么事上'开窍'了？突然就懂了。",alt:["开窍是一种什么感觉？","有些事情是不是只能靠时间才能开窍？","今天有没有什么小顿悟？"]},
+"10-16":{default:"你觉得'成熟'和'世故'的区别是什么？你希望自己更成熟还是保留一些天真？",alt:["天真到成熟是单向的吗？","还能不能回到天真？","成熟不代表失去天真——你觉得可能吗？"]},
+"10-17":{default:"你今天微笑了吗？真的那种。",alt:["你容易被什么逗笑？","假笑和真笑的频率在你生活中各占多少？","做一个让自己真笑的事——今天做了吗？"]},
+"10-18":{default:"你相信'因果报应'或者'善恶有报'吗？",alt:["做好事是为了回报吗？","有没有什么事让你觉得'报应不爽'？","你今天种下了什么因？"]},
+"10-19":{default:"你上一次感觉到'内心平静'是什么时候？在做什么？",alt:["平静对你来说是常态还是奢侈品？","什么时候你的内心最不平静？","今天有没有平静的片刻？"]},
+"10-20":{default:"你觉得人应不应该有'野心'？你有吗？",alt:["野心和贪婪的区别？","没有野心是不是也可以活得很好？","今天的自己在追求什么？"]},
+"10-21":{default:"如果有研究者来研究你的日常生活，他们会发现什么规律？",alt:["你的一天通常是怎么过的？","有没有什么你注意不到的习惯？","从上帝视角看自己——会有什么发现？"]},
+"10-22":{default:"你对自己的'受教育经历'满意吗？学校之外你学到了什么？",alt:["学历重要吗？在你的人生中。","什么知识在学校里学不到但很重要？","今天你从生活中学到了什么？"]},
+"10-23":{default:"霜降。秋天最后一个节气。这个秋天你过得好吗？",alt:["秋天在你心中是什么颜色的？","这个秋天你收获了什么？","准备好迎接冬天了吗？"]},
+"10-24":{default:"你有没有什么'未经审视'的观念？最近有没有什么被挑战的？",alt:["你的哪些想法是'别人塞给你的'？","审视自己的信念——是一件怎样的事？","今天有没有什么观点你开始质疑了？"]},
+"10-25":{default:"今天有没有什么让你感受到'人性之美'的瞬间？",alt:["人性本善还是本恶——你的观察是什么？","陌生人之间的善意为什么格外动人？","今天你有没有让别人感受到人性的温暖？"]},
+"10-26":{default:"如果非要失去一种感官，视觉、听觉、嗅觉、味觉、触觉——你最不能失去哪个？",alt:["你平时最依赖哪种感官？","每种感官带来的最美好的体验是什么？","今天各个感官分别经历了什么？"]},
+"10-27":{default:"你觉得自己现在的生活中有没有什么是'为了别人在做'？",alt:["为了别人的期待而活——你占了你生命的多少？","什么选择是完全为了自己的？","你有没有为自己做过选择？"]},
+"10-28":{default:"你最想要被理解的是什么？",alt:["有什么是你觉得别人总是理解不了的？","被误解的时候你会想解释吗？","理解万岁——这句话你认同吗？"]},
+"10-29":{default:"你觉得人生有没有'正确答案'？",alt:["如果有正确答案，谁在判卷？","没有正确答案会不会让人更焦虑？","你在寻找答案还是在学习如何与问题共存？"]},
+"10-30":{default:"万圣节前夕。如果今天你可以'变成'另一个人一天，你想变成谁？",alt:["别人的生活为什么看起来总是更好？","做自己哪里好？哪里不好？","别人眼中的你是什么样子？"]},
+"10-31":{default:"十月最后一天。深秋了。用一个词为十月画上句号。",alt:["这个十月给你印象最深的是什么？","十一月——你想在这个冬天的前奏里做什么？","十月教会了你什么？"]},
+
+// ═══ 十一月 · 初冬感恩 ═══
+"11-01":{default:"十一月了。天越来越冷。冬天来了你第一个想到的是什么？",alt:["冬天会让你的情绪有什么变化？","冷天你最喜欢窝在哪里做什么？","今天有没有感受到冬天的脚步？"]},
+"11-02":{default:"如果有机会和世界上任何一个人吃一顿饭（活着的或已故的），你选谁？",alt:["你会问TA什么？","这顿饭想在哪里吃？","你为什么选这个人？TA对你意味着什么？"]},
+"11-03":{default:"你觉得自己在'好好照顾自己'吗？身体上，心理上。",alt:["自我照顾在你的优先级中排第几？","你为自己做过的'最照顾自己'的事是什么？","今天有没有好好照顾自己？"]},
+"11-04":{default:"你印象最深的一次'告别'是什么？当时你有好好告别吗？",alt:["有些告别来不及说再见——你经历过吗？","好好告别为什么重要？","如果明天就要告别现在的生活，你会做什么？"]},
+"11-05":{default:"你有没有什么说了很久但还没做的事？卡在哪里？",alt:["拖延的背后是什么？恐惧？完美主义？还是不够想？","有什么能推动你迈出第一步？","今天能不能做一小步？"]},
+"11-06":{default:"你觉得自己是一个'有趣'的人吗？有趣的标准是什么？",alt:["有趣的人有什么共同特质？","无聊是不是也是一种能力？","今天的你有趣吗？"]},
+"11-07":{default:"立冬。冬天正式开始。冬天对你来说是什么颜色的？",alt:["冬天是萧瑟还是纯净？","冬天的美在哪里？","今天立冬，你有什么入冬的仪式感？"]},
+"11-08":{default:"什么事情是你的'舒适食物'？心情不好的时候会吃什么？",alt:["食物和情绪之间的关系——你怎么看？","安慰食物为什么能安慰人？","今天吃了什么？有没有什么特别想吃的？"]},
+"11-09":{default:"你觉得自己更偏向'理性'还是'感性'？在重要决定中哪个占主导？",alt:["理性一定比感性好吗？","感性的决定后来证明是对的多还是错的多？","今天你做的决定是理性还是感性驱动的？"]},
+"11-10":{default:"如果让你为人类写一份'使用说明书'，第一条规则是什么？",alt:["人类有什么共通的特质？","如果人类更好懂一些，你的生活会更顺利吗？","人类最需要被'说明'的是什么？"]},
+"11-11":{default:"双十一。你今天是购物了还是在抵制购物？消费主义你怎么看？",alt:["你容易被促销打动吗？","需要和想要的界限在哪里？","物质消费和体验消费，哪个更值？"]},
+"11-12":{default:"你对自己目前的身心状态满意吗？有什么想改善的？",alt:["身心健康之间你发现了什么联系？","如果给自己的整体状态打分，今天几分？","改善从什么地方开始？"]},
+"11-13":{default:"你人生中最大的'转折点'是什么？当时你意识到了吗？",alt:["有些转折只有在回头看时才发现——你有吗？","如果那个转折没有发生，你现在会在哪里？","今天会不会也是一个转折点？"]},
+"11-14":{default:"你觉得'人活着的意义'这个问题有答案吗？你的答案是什么？",alt:["意义是自己赋予的还是寻找的？","有没有什么事情让你觉得'活着的意义就在于此'？","如果人生没有意义——这是坏事吗？"]},
+"11-15":{default:"你是不是一个容易'想太多'的人？想太多给你带来了什么？",alt:["多想是天赋还是负担？","什么时候思考变得不再有建设性？","今天有没有什么事情你想太多了？"]},
+"11-16":{default:"你有没有什么特别'迷信'的小习惯？就算不理性也会做。",alt:["幸运物、幸运数字——你有什么？","理性的人也会迷信吗？","这种小习惯给了你什么？"]},
+"11-17":{default:"你觉得世界上需要更多什么？",alt:["更多善良？更多耐心？更多智慧？还是更多什么？","你觉得自己能为这个世界多带来一点什么？","今天你有没有往世界里加了什么好东西？"]},
+"11-18":{default:"你对'原生家庭'这个词怎么看？你的原生家庭对你影响最大的是什么？",alt:["把一切都归因于原生家庭——公平吗？","你从原生家庭中带走了什么好的和不好的？","你今天有没有意识到原生家庭的影响在你身上的运作？"]},
+"11-19":{default:"你觉得自己是一个幸运的人吗？幸运更多的是发生还是感知？",alt:["感恩练习——你试过吗？","换个角度看，你今天有多幸运？","列出今天三件幸运的小事。"]},
+"11-20":{default:"如果你可以重新设计自己的外貌，你会改变什么？或者什么都不想改？",alt:["接纳自己外貌的过程是怎样的？","社会对长相的标准影响了你多少？","今天照镜子——你喜欢你看到的吗？"]},
+"11-21":{default:"对你来说，什么是'心安'？",alt:["什么情况会让你心里不踏实？","怎么才能让自己心安？","今天你的心安稳吗？"]},
+"11-22":{default:"小雪。冬天越来越深了。你喜欢下雪吗？",alt:["下雪天让你想到什么？","雪是浪漫的还是麻烦的？","如果有初雪，你最想做什么？"]},
+"11-23":{default:"你觉得一个人可不可以'太真实'？真实有边界吗？",alt:["在什么场合你选择不真实？","真实的代价是什么？","今天你有没有压抑真实的自己？"]},
+"11-24":{default:"你上一件'不计成本'去做的事是什么？结果怎么样？",alt:["有些事情不能用投入产出衡量——你有吗？","不计成本是不是一种奢侈？","今天有没有什么事你纯粹因为想做而做？"]},
+"11-25":{default:"你对'感恩'这件事怎么看？感恩是需要练习的吗？",alt:["感恩节在即——你有什么特别想感谢的？","感恩和亏欠有什么不同？","今天你想感谢什么？写下来。"]},
+"11-26":{default:"你最近学到的最重要的一个教训是什么？",alt:["教训通常是通过痛苦来的吗？","有没有不痛苦的教训？","教训和被教训的区别——你更接受哪种？"]},
+"11-27":{default:"'现在'——这个瞬间。你感受到了什么？",alt:["你此刻的身体感受是什么？","情绪呢？有什么在涌动吗？","停下来，就现在。深呼吸。你感觉到了什么？"]},
+"11-28":{default:"如果可以改变世界上的一件事，你会改变什么？",alt:["为什么是这一件？","这个改变从何开始？","个人的力量能改变世界吗？你相信吗？"]},
+"11-29":{default:"你对自己的'友情维护'满意吗？你多久主动联系一次朋友？",alt:["维持友谊需要什么？","有没有朋友渐渐失去联系？为什么？","今天有没有给朋友发一条消息？"]},
+"11-30":{default:"十一月最后一天。这个月你感谢自己做了什么？",alt:["回顾十一月——最值得记住的是什么？","十二月就在眼前——你有什么期待？","冬天过半——你感觉到了什么变化？"]},
+
+// ═══ 十二月 · 岁末回望 ═══
+"12-01":{default:"十二月。今年最后一个月。你准备好迎接年底了吗？",alt:["最后一个月你想完成什么？","一年就要过去——你有不舍吗？","给今年一个总结的开头吧。"]},
+"12-02":{default:"你今年收到的最好的赞美是什么？",alt:["赞美对你来说有多重要？","赞美和奉承你能分辨吗？","今天有人夸你吗？你夸自己了吗？"]},
+"12-03":{default:"你觉得'做自己'容易吗？你什么时候最'做自己'？",alt:["在谁面前你最做自己？","做自己和任性有什么区别？","今天你做了多少自己？"]},
+"12-04":{default:"你今年最大的成长是什么？不一定是外在成就。",alt:["成长是你在自己身上注意到的最大的变化吗？","你如何衡量成长？","今年你比去年更好地处理了什么？"]},
+"12-05":{default:"你相信'善有善报'吗？有没有什么经历支持或反对这个观点？",alt:["做好事是为了什么？","不求回报的善良存在吗？","今天你做了什么善意的事？大的小的都算。"]},
+"12-06":{default:"你觉得什么是最珍贵的——用钱买不到的？",alt:["你有这个最珍贵的东西吗？","你最珍视的无形之物是什么？","今天有没有感受到它的存在？"]},
+"12-07":{default:"大雪。冬天最冷的时候快到了。你准备好过冬了吗？",alt:["冬天最让你期待的是什么？","冬天适合做什么？","心里暖不暖——今天你的心里温度是多少？"]},
+"12-08":{default:"你是一个善于表达情感的人吗？拥抱、说爱、说感谢。",alt:["情感表达对你来说是自然的还是需要刻意练习的？","什么阻碍了情感表达？","今天有没有表达过情感？"]},
+"12-09":{default:"你今年有没有失去什么人或什么东西？你是如何应对的？",alt:["失去教会了你什么？","关于'放手'——你有哪些经验？","有没有什么是你正在失去但还没准备好放手的？"]},
+"12-10":{default:"你觉得自己有'成长的阵痛'吗？痛苦是不是成长的必然？",alt:["有没有不那么痛的成长方式？","最近有没有经历什么让你成长的困难？","回望过去——哪些痛现在看是有意义的？"]},
+"12-11":{default:"如果你的朋友要用三个词形容你，你希望是哪三个？",alt:["这三个词准确描述了现在的你吗？","如果不够准确——你想做什么改变？","你希望被记住的三个词是什么？"]},
+"12-12":{default:"今天你做了什么值得被记录下来？哪怕非常非常小的事。",alt:["'值得'的门槛是你自己设定的——你设得高吗？","什么是'不值得记录'的？真的不值得吗？","记下今天的一个瞬间。"]},
+"12-13":{default:"你对自己今年的'时间分配'满意吗？时间都花在了哪里？",alt:["如果时间可以重新分配，你会改变什么？","什么占用了你太多时间？什么时间不够？","你能控制自己的时间分配吗？"]},
+"12-14":{default:"你觉得'原谅自己'难吗？你有没有什么一直没有原谅自己的事？",alt:["对自己的审判为什么比对别人更严苛？","原谅自己之前需要做什么？","今天就对自己说一句'我原谅你'——对那件一直放不下的事。"]},
+"12-15":{default:"如果让你为今年选一首'主题曲'，会是什么？为什么？",alt:["音乐和记忆的联结——你有哪首歌代表某个时期？","这首歌的歌词有什么特别的意义？","今年你听最多遍的是哪首歌？"]},
+"12-16":{default:"你觉得自己有'中年危机'吗？或者你觉得什么是'中年危机'？",alt:["中年危机是一种什么感觉？","各个年龄段是不是都有自己的危机？","你现在在哪个生命阶段？感觉如何？"]},
+"12-17":{default:"你有没有一个'人生榜样'？你想成为像谁那样的人？",alt:["榜样身上最吸引你的是什么？","榜样一定是要完美的吗？","你也可以是别人的榜样——你意识到了吗？"]},
+"12-18":{default:"年末了。有没有什么你今年该放下但还没放下的？",alt:["放下和放弃的区别？","什么值得放下？什么值得坚持？","今天在心里放下点什么吧——哪怕只是开始。"]},
+"12-19":{default:"你的年度关键词是什么？用一个字或一个词。",alt:["为什么是这个？","这个词代表了你今年的状态还是你最深的感受？","明年的关键词你想是什么？"]},
+"12-20":{default:"你今年对谁说'再见'了？那个人或那件事还在你心里吗？",alt:["再见是不是永远不见？","有些再见是好的再见——你有吗？","今年和你告别的事物中，哪些让你成长？"]},
+"12-21":{default:"冬至。一年中黑夜最长的一天。过了今天白天就会越来越长。",alt:["冬至让不让你感到希望？","在最长最黑的日子里想些什么？","包饺子、吃汤圆——冬至有什么仪式？"]},
+"12-22":{default:"你今年有没有做出什么让你自己惊讶的事？好的那种。",alt:["惊讶自己的什么能力或表现？","你给自己的惊喜说明了你什么潜力？","你今年是不是比自己以为的更厉害？"]},
+"12-23":{default:"如果平安夜你可以许一个愿望——会是什么？",alt:["愿望是给自己还是给别人？","你相信愿望会实现吗？","如果愿望是目标加上行动——你愿意为此做什么？"]},
+"12-24":{default:"平安夜。今年你感到'平安'吗？内心安稳吗？",alt:["平安是什么感觉？","什么让你的心不安？","今晚——愿你平安。给心里的自己一份安宁。"]},
+"12-25":{default:"圣诞节。关于'给予'，你有什么感受？",alt:["给予和接受哪个更让你快乐？","你今年给予了什么？时间、爱、帮助？","不求回报的给予是一种什么体验？"]},
+"12-26":{default:"今年你觉得最'值得花'的一笔钱是什么？不一定是金额大的。",alt:["消费=价值吗？","有什么你觉得'太值了'的消费？","消费观今年有变化吗？"]},
+"12-27":{default:"假如今年是一本书，书名是什么？你会怎么向别人介绍这本书？",alt:["这本书的亮点是什么？低谷呢？","想撕掉的章节和想反复读的章节分别是？","你满意这本书的结局吗？"]},
+"12-28":{default:"如果你可以和明年的自己说一句话，会是什么？",alt:["是祝福、提醒、还是期待？","你希望明年今天的自己有什么不同？","把这句话写下来——明年打开看看。"]},
+"12-29":{default:"今年你帮助过谁？谁帮助过你？",alt:["帮助不一定是大事——小的帮助今年你还记得吗？","被帮助的时候你心里在想什么？","今年谁对你伸出了手？你伸手了吗？"]},
+"12-30":{default:"今年还有两天就结束了。有没有什么你想在最后两天做的？",alt:["最后两天有特别的计划吗？","清空今年的待办清单——可能吗？有必要吗？","对今年最后两天的期待是什么？"]},
+"12-31":{default:"2026年的最后一天。跨年夜。今年你过得好吗？明年你有什么愿望？",alt:["用一段话告别今年。","不用完美——今年的你就是最好的你。","新年快乐。谢谢今年的自己。明年见。"]}
+};
+
+// ==================== 全局状态 ====================
+const TODAY = new Date();
+const TODAY_STR = formatDate(TODAY);           // "YYYY-MM-DD"
+const TODAY_MD  = formatMD(TODAY);             // "MM-DD"
+const STORAGE_KEY = 'answer_' + TODAY_STR;
+const APP_PREFIX  = 'tongrihuixiang_';
+
+let currentQuestion = '';    // 当前显示的题目文本
+let questionLocked = false;  // 题目是否已锁定（用户选定后锁定）
+let isToday = true;          // 是否为今天（跨天只读）
+
+// ==================== 工具函数 ====================
+function formatDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+function formatMD(d) {
+  return String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function getLunarMonthDay(d) {
+  return (d.getMonth()+1) + '月' + d.getDate() + '日';
+}
+function getWeekday(d) {
+  const days = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  return days[d.getDay()];
+}
+
+// ==================== 题目分类（关键词判断） ====================
+const DEEP_KEYWORDS = [
+  '人生','意义','价值','死亡','遗憾','后悔','恐惧','梦想','灵魂','真实','信仰',
+  '原则','选择','失去','改变','成长','孤独','如果','重新','最后','最重要',
+  '失败','结束','告别','秘密','真相','命运','初心','定义','相信','生命','爱',
+  '痛苦','自由','回忆','时光','勇气','害怕','害怕','后悔','思念','永远',
+  '内心','自我','存在','意义','目的','墓志铭','来生','死亡','临终','葬礼',
+  '人性','本质','深层','反思','原谅','成熟','老去','失去','软弱'
+];
+
+function classifyQuestion(text) {
+  for (let kw of DEEP_KEYWORDS) {
+    if (text.indexOf(kw) !== -1) return 'deep';
+  }
+  return 'casual';
+}
+
+// ==================== 题目引擎 ====================
+function getDefaultQuestion() {
+  // 获取今日默认题
+  const entry = QUESTION_BANK[TODAY_MD];
+  if (entry) return entry.default;
+  // 2月29日非闰年回退
+  if (TODAY_MD === '02-29') {
+    const feb28 = QUESTION_BANK['02-28'];
+    return feb28 ? feb28.default : '今天想对自己说些什么？';
+  }
+  return '今天想对自己说些什么？';
+}
+
+function getAlternatives() {
+  const entry = QUESTION_BANK[TODAY_MD];
+  if (entry && entry.alt && entry.alt.length > 0) {
+    return entry.alt;
+  }
+  // 回退
+  if (TODAY_MD === '02-29') {
+    const feb28 = QUESTION_BANK['02-28'];
+    return feb28 && feb28.alt ? feb28.alt : ['今天最让你感恩的是什么？','今天有什么小事让你开心？'];
+  }
+  return ['今天最让你感恩的是什么？','今天有什么小事让你开心？','最近你在思考什么？'];
+}
+
+function getRandomAlt() {
+  const alts = getAlternatives();
+  const available = alts.filter(q => q !== currentQuestion);
+  if (available.length === 0) return alts[Math.floor(Math.random() * alts.length)];
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+// ==================== 初始化 ====================
+async function init() {
+  // 显示日期
+  document.getElementById('dateDisplay').textContent =
+    TODAY.getFullYear() + '年' + getLunarMonthDay(TODAY) + '  ' + getWeekday(TODAY);
+  document.getElementById('yearRange').textContent =
+    '五年日记 · 同日回响';
+
+  // 加载Gist配置
+  loadGistConfig();
+
+  // 加载本地缓存数据（先显示，秒开）
+  loadSavedData();
+
+  // 如果已配置云端，后台拉取最新数据
+  if (gistConfig && gistConfig.token) {
+    syncFromCloud().then(function(cloudData) {
+      if (cloudData) {
+        // 云端数据已合并到localStorage，刷新显示
+        loadSavedData();
+        setupQuestion();
+        checkDateLock();
+        refreshSaveIndicator();
+        showToast('已从云端同步最新数据 ☁️', 'info');
+      }
+    });
+  }
+
+  // 设置问题
+  setupQuestion();
+
+  // 检查跨天
+  checkDateLock();
+
+  // 启动星空
+  initStarfield();
+
+  // 更新字数
+  updateCharCount();
+
+  // 文件导入监听
+  document.getElementById('importFileInput').addEventListener('change', handleImport);
+
+  // 文本框输入监听——开始打字即锁定题目
+  document.getElementById('answerInput').addEventListener('input', function() {
+    if (!questionLocked && this.value.length > 0) {
+      questionLocked = true;
+      updateChangeBtnState();
+    }
+    updateCharCount();
+  });
+
+  // 刷新保存状态显示
+  refreshSaveIndicator();
+
+  // 显示设置面板（如果未配置Token）
+  if (!gistConfig || !gistConfig.token) {
+    showToast('💡 点击底部 ⚙️ 设置云端同步，实现手机电脑数据互通', 'info');
+  }
+
+  // 渲染设置面板中的状态
+  renderSettingsPanel();
+}
+
+function setupQuestion() {
+  const saved = loadFromStorage(STORAGE_KEY);
+  if (saved && saved.question) {
+    // 已有保存的问题（用户之前选定过）
+    currentQuestion = saved.question;
+    questionLocked = true;
+  } else {
+    // 使用默认题
+    currentQuestion = getDefaultQuestion();
+    questionLocked = false;
+  }
+  renderQuestion();
+}
+
+function renderQuestion() {
+  document.getElementById('questionText').textContent = currentQuestion;
+  const type = classifyQuestion(currentQuestion);
+  const badge = document.getElementById('questionBadge');
+  if (type === 'deep') {
+    badge.textContent = '深度反思';
+    badge.className = 'question-type-badge badge-deep';
+    badge.style.display = 'inline-block';
+  } else {
+    badge.textContent = '轻松日常';
+    badge.className = 'question-type-badge badge-casual';
+    badge.style.display = 'inline-block';
+  }
+  // 触发背景切换
+  setStarMode(type);
+  // 更新换题按钮状态
+  updateChangeBtnState();
+}
+
+function updateChangeBtnState() {
+  const btn = document.getElementById('btnChange');
+  if (questionLocked) {
+    btn.disabled = true;
+    btn.textContent = '🔒 已选定';
+    btn.title = '开始书写后题目自动锁定';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '🔄 换一题';
+    btn.title = '可多次点击，直到换到满意的题目';
+  }
+}
+
+function changeQuestion() {
+  if (questionLocked) return;
+  // 从全部题库（366天所有题目）中随机抽取不同题目
+  const allQuestions = [];
+  for (let md in QUESTION_BANK) {
+    const entry = QUESTION_BANK[md];
+    allQuestions.push(entry.default);
+    if (entry.alt) entry.alt.forEach(function(q) { allQuestions.push(q); });
+  }
+  // 去重 + 排除当前题
+  const unique = [...new Set(allQuestions)];
+  const available = unique.filter(function(q) { return q !== currentQuestion; });
+  currentQuestion = available[Math.floor(Math.random() * available.length)];
+  renderQuestion();
+}
+
+// ==================== 数据存储 ====================
+function loadFromStorage(key) {
+  try {
+    const raw = localStorage.getItem(APP_PREFIX + key);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function saveToStorage(key, data) {
+  try {
+    localStorage.setItem(APP_PREFIX + key, JSON.stringify(data));
+    return true;
+  } catch(e) {
+    showToast('保存失败：本地存储空间不足，请导出备份后清理旧数据', 'warning');
+    return false;
+  }
+}
+
+function loadSavedData() {
+  const saved = loadFromStorage(STORAGE_KEY);
+  if (saved && saved.answer) {
+    document.getElementById('answerInput').value = saved.answer;
+    // 检查是否为今天保存的
+    if (saved.date === TODAY_STR) {
+      isToday = true;
+    }
+  }
+}
+
+function checkDateLock() {
+  const saved = loadFromStorage(STORAGE_KEY);
+  if (saved && saved.date && saved.date !== TODAY_STR) {
+    // 跨天——只读模式
+    isToday = false;
+    const textarea = document.getElementById('answerInput');
+    textarea.disabled = true;
+    textarea.placeholder = '📖 这是 ' + saved.date + ' 的记录（已锁定，不可修改）';
+    document.getElementById('lockedHint').style.display = 'block';
+    document.getElementById('btnSave').style.display = 'none';
+    document.getElementById('btnChange').disabled = true;
+    document.getElementById('btnChange').textContent = '🔒 已锁定';
+  } else {
+    isToday = true;
+    document.getElementById('lockedHint').style.display = 'none';
+    document.getElementById('btnSave').style.display = '';
+  }
+}
+
+// ==================== 保存 ====================
+function saveAnswer() {
+  const answer = document.getElementById('answerInput').value.trim();
+  if (!answer) {
+    showToast('请先写下你的回答再保存哦 ✍️', 'warning');
+    return;
+  }
+  // 保存即锁定题目
+  if (!questionLocked) {
+    questionLocked = true;
+    updateChangeBtnState();
+  }
+
+  const data = {
+    question: currentQuestion,
+    answer: answer,
+    date: TODAY_STR,
+    year: TODAY.getFullYear(),
+    lastModified: new Date().toISOString()
+  };
+
+  // 先存本地（秒级响应）
+  saveToStorage(STORAGE_KEY, data);
+  updateSaveIndicator();
+  showToast('保存成功 💾', 'success');
+
+  // 后台同步到云端（不阻塞界面）
+  if (gistConfig && gistConfig.token) {
+    syncToCloud().then(function(ok) {
+      if (ok) showToast('已同步到云端 ☁️', 'info');
+    });
+  }
+}
+
+// ==================== 保存状态指示 ====================
+function updateSaveIndicator() {
+  const saved = loadFromStorage(STORAGE_KEY);
+  const indicator = document.getElementById('saveIndicator');
+  const timeEl = document.getElementById('saveTime');
+  if (saved && saved.lastModified) {
+    const d = new Date(saved.lastModified);
+    const timeStr = d.getHours().toString().padStart(2,'0') + ':' +
+                    d.getMinutes().toString().padStart(2,'0') + ':' +
+                    d.getSeconds().toString().padStart(2,'0');
+    timeEl.textContent = '今天 ' + timeStr + '（已保存 ' + saved.answer.length + ' 字）';
+    indicator.style.display = 'block';
+  }
+}
+function refreshSaveIndicator() {
+  const saved = loadFromStorage(STORAGE_KEY);
+  const indicator = document.getElementById('saveIndicator');
+  if (saved && saved.answer) {
+    updateSaveIndicator();
+  } else {
+    indicator.style.display = 'none';
+  }
+}
+
+// ==================== GitHub Gist 云同步引擎 ====================
+const GIST_STORAGE_KEY = APP_PREFIX + 'gist_config'; // 存 token + gistId
+let gistConfig = null; // { token, gistId }
+let syncStatus = 'idle'; // idle | syncing | success | error
+
+function loadGistConfig() {
+  try {
+    const raw = localStorage.getItem(GIST_STORAGE_KEY);
+    gistConfig = raw ? JSON.parse(raw) : null;
+    return gistConfig;
+  } catch(e) { gistConfig = null; return null; }
+}
+
+function saveGistConfig(cfg) {
+  gistConfig = cfg;
+  localStorage.setItem(GIST_STORAGE_KEY, JSON.stringify(cfg));
+}
+
+// 从Gist拉取所有日记数据
+async function syncFromCloud() {
+  if (!gistConfig || !gistConfig.token || !gistConfig.gistId) return null;
+  try {
+    updateSyncUI('syncing');
+    const resp = await fetch('https://api.github.com/gists/' + gistConfig.gistId, {
+      headers: { 'Authorization': 'Bearer ' + gistConfig.token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const gist = await resp.json();
+    const file = gist.files && gist.files['diary-data.json'];
+    if (!file || !file.content) { updateSyncUI('success'); return {}; }
+    const data = JSON.parse(file.content);
+    // 合并到localStorage
+    let merged = 0;
+    for (let key in data) {
+      if (key.startsWith('answer_')) {
+        const existing = loadFromStorage(key);
+        if (!existing || new Date(data[key].lastModified) > new Date(existing.lastModified)) {
+          saveToStorage(key, data[key]);
+          merged++;
+        }
+      }
+    }
+    updateSyncUI('success');
+    return data;
+  } catch(e) {
+    console.warn('云同步拉取失败:', e.message);
+    updateSyncUI('error');
+    return null;
+  }
+}
+
+// 将localStorage数据推送到Gist
+async function syncToCloud() {
+  if (!gistConfig || !gistConfig.token || !gistConfig.gistId) return false;
+  try {
+    updateSyncUI('syncing');
+    // 收集所有本地数据
+    const allData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(APP_PREFIX + 'answer_')) continue;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try {
+          allData[key.replace(APP_PREFIX, '')] = JSON.parse(raw);
+        } catch(e) { continue; }
+      }
+    }
+    const content = JSON.stringify(allData);
+    const resp = await fetch('https://api.github.com/gists/' + gistConfig.gistId, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'Bearer ' + gistConfig.token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        files: { 'diary-data.json': { content: content } }
+      })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    updateSyncUI('success');
+    return true;
+  } catch(e) {
+    console.warn('云同步推送失败:', e.message);
+    updateSyncUI('error');
+    return false;
+  }
+}
+
+// 首次创建私有Gist
+async function createGist(token) {
+  try {
+    const resp = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        description: '同日回响之5Y · 五年日记数据',
+        public: false,
+        files: { 'diary-data.json': { content: '{}' } }
+      })
+    });
+    if (!resp.ok) throw new Error('创建Gist失败: HTTP ' + resp.status);
+    const gist = await resp.json();
+    return gist.id;
+  } catch(e) {
+    console.error('创建Gist失败:', e.message);
+    return null;
+  }
+}
+
+// 验证Token是否有效
+async function verifyToken(token) {
+  try {
+    const resp = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    return resp.ok;
+  } catch(e) { return false; }
+}
+
+function updateSyncUI(status) {
+  syncStatus = status;
+  const el = document.getElementById('syncDot');
+  if (!el) return;
+  el.className = 'sync-dot sync-' + status;
+  const labels = { idle:'', syncing:'同步中…', success:'已同步 ✅', error:'同步失败 ⚠️' };
+  el.title = labels[status] || '';
+}
+
+// 带云同步的保存
+async function saveWithCloud(data) {
+  saveToStorage(STORAGE_KEY, data);
+  updateSaveIndicator();
+  if (gistConfig) {
+    await syncToCloud();
+  }
+}
+
+// ==================== 设置面板交互 ====================
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    renderSettingsPanel();
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function renderSettingsPanel() {
+  const statusEl = document.getElementById('settingsStatus');
+  const tokenInput = document.getElementById('githubToken');
+  if (gistConfig && gistConfig.token) {
+    tokenInput.value = gistConfig.token;
+    statusEl.innerHTML = '<span style="color:#6a9a7a;">✅ 已配置云端同步</span> | Gist: <code>' + (gistConfig.gistId || '???').slice(0,8) + '...</code>';
+  } else {
+    tokenInput.value = '';
+    statusEl.innerHTML = '<span style="color:#c0a060;">⚠️ 尚未配置云端同步</span>';
+  }
+}
+
+async function setupCloud() {
+  const token = document.getElementById('githubToken').value.trim();
+  if (!token) {
+    document.getElementById('settingsStatus').innerHTML = '<span style="color:#c06060;">请输入 GitHub Token</span>';
+    return;
+  }
+  document.getElementById('settingsStatus').innerHTML = '⏳ 正在验证 Token...';
+  const valid = await verifyToken(token);
+  if (!valid) {
+    document.getElementById('settingsStatus').innerHTML = '<span style="color:#c06060;">❌ Token 无效，请检查是否正确复制</span>';
+    return;
+  }
+  document.getElementById('settingsStatus').innerHTML = '⏳ 正在创建云端存储…';
+  const gistId = await createGist(token);
+  if (!gistId) {
+    document.getElementById('settingsStatus').innerHTML = '<span style="color:#c06060;">❌ 创建云端存储失败，请检查网络</span>';
+    return;
+  }
+  saveGistConfig({ token: token, gistId: gistId });
+  // 首次同步：把本地已有数据推上去
+  document.getElementById('settingsStatus').innerHTML = '⏳ 正在同步本地数据…';
+  const ok = await syncToCloud();
+  if (ok) {
+    renderSettingsPanel();
+    showToast('☁️ 云端同步已就绪！现在可在其他设备打开此页面，输入相同 Token 即可同步', 'success');
+  } else {
+    renderSettingsPanel();
+    showToast('⚠️ 配置完成但首次同步失败，下次保存时会自动重试', 'warning');
+  }
+}
+
+function disconnectCloud() {
+  if (!confirm('确定要断开云端同步吗？本地数据不会丢失，但跨设备同步将停止。')) return;
+  localStorage.removeItem(GIST_STORAGE_KEY);
+  gistConfig = null;
+  document.getElementById('githubToken').value = '';
+  document.getElementById('settingsStatus').innerHTML = '<span style="color:#8b9db5;">已断开云端同步</span>';
+  updateSyncUI('idle');
+  showToast('已断开云端同步', 'info');
+}
+
+// 统计本地数据
+function countLocalRecords() {
+  var c = 0;
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    if (k && k.indexOf(APP_PREFIX + 'answer_') === 0) c++;
+  }
+  return c;
+}
+
+// 一键部署到 GitHub Pages
+async function deployToPages() {
+  if (!gistConfig || !gistConfig.token) {
+    document.getElementById('settingsStatus').innerHTML = '<span style="color:#c06060;">请先连接 GitHub Token</span>';
+    return;
+  }
+  var statusEl = document.getElementById('settingsStatus');
+  statusEl.innerHTML = '⏳ 正在部署到 GitHub Pages…';
+  var token = gistConfig.token;
+
+  try {
+    // 1. 获取当前HTML源码
+    var htmlContent = document.documentElement.outerHTML;
+
+    // 2. 检查是否已有 repo
+    var userResp = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    var userData = await userResp.json();
+    var username = userData.login;
+    var repoName = 'tongrihuixiang';
+
+    // 3. 尝试创建或使用已有 repo
+    var repoExists = false;
+    var checkResp = await fetch('https://api.github.com/repos/' + username + '/' + repoName, {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (checkResp.ok) {
+      repoExists = true;
+    } else {
+      var createResp = await fetch('https://api.github.com/user/repos', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: repoName,
+          description: '同日回响之5Y · 五年日记每日一问',
+          private: false,
+          auto_init: true
+        })
+      });
+      if (!createResp.ok) throw new Error('创建仓库失败');
+    }
+
+    // 4. 上传 index.html
+    // 先获取现有文件的 SHA（如果存在）
+    var sha = null;
+    var fileResp = await fetch('https://api.github.com/repos/' + username + '/' + repoName + '/contents/index.html', {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (fileResp.ok) {
+      var fileData = await fileResp.json();
+      sha = fileData.sha;
+    }
+
+    var putBody = {
+      message: 'Update 同日回响之5Y',
+      content: btoa(unescape(encodeURIComponent(htmlContent)))
+    };
+    if (sha) putBody.sha = sha;
+
+    var putResp = await fetch('https://api.github.com/repos/' + username + '/' + repoName + '/contents/index.html', {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(putBody)
+    });
+    if (!putResp.ok) throw new Error('上传文件失败');
+
+    // 5. 启用 GitHub Pages
+    await fetch('https://api.github.com/repos/' + username + '/' + repoName + '/pages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ source: { branch: 'main', path: '/' } })
+    });
+
+    var publicUrl = 'https://' + username + '.github.io/' + repoName + '/';
+    statusEl.innerHTML = '<span style="color:#6a9a7a;">✅ 部署成功！</span><br>公网地址：<a href="' + publicUrl + '" target="_blank" style="color:#7eb8da;">' + publicUrl + '</a><br><small style="color:#8b9db5;">（1-2分钟后生效，手机电脑都能打开）</small>';
+
+  } catch(e) {
+    statusEl.innerHTML = '<span style="color:#c06060;">❌ 部署失败：' + e.message + '</span>';
+    console.error('Deploy error:', e);
+  }
+}
+
+// ==================== Word文档生成 ====================
+function buildWordHTML() {
+  // 收集所有记录
+  const allRecords = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith(APP_PREFIX + 'answer_')) continue;
+    const raw = localStorage.getItem(key);
+    if (!raw) continue;
+    try {
+      const data = JSON.parse(raw);
+      if (!data.date || !data.question || !data.answer) continue;
+      const md = data.date.slice(5); // "MM-DD"
+      if (!allRecords[md]) allRecords[md] = {};
+      allRecords[md][data.year] = { question: data.question, answer: data.answer };
+    } catch(e) { continue; }
+  }
+
+  // 按日期排序
+  const sortedMD = Object.keys(allRecords).sort();
+
+  // 构建HTML
+  let bodyHTML = '';
+  for (let md of sortedMD) {
+    const [m, d] = md.split('-');
+    bodyHTML += '<h1>' + parseInt(m) + '月' + parseInt(d) + '日</h1>\n';
+    const years = Object.keys(allRecords[md]).sort();
+    for (let y of years) {
+      const r = allRecords[md][y];
+      bodyHTML += '  <h2>' + y + '年</h2>\n';
+      bodyHTML += '  <p class="question">问：' + escapeHTML(r.question) + '</p>\n';
+      bodyHTML += '  <p class="answer">答：' + escapeHTML(r.answer) + '</p>\n';
+    }
+  }
+
+  if (!bodyHTML) {
+    bodyHTML = '<p style="text-align:center;color:#999;padding:60px;">暂无记录。开始写下你的第一篇日记吧 ✨</p>';
+  }
+
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>同日回响之5Y · 五年日记归档</title>
+<style>
+  body { font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif; max-width:780px; margin:40px auto; padding:0 24px; color:#2c3e50; background:#fafbfc; }
+  h1 { color:#2c3e50; font-size:1.35rem; border-bottom:2px solid #7eb8da; padding-bottom:8px; margin-top:36px; margin-bottom:16px; letter-spacing:0.04em; }
+  h2 { color:#5a7a9a; font-size:1.05rem; margin-left:20px; margin-top:20px; margin-bottom:8px; }
+  .question { color:#8b7d6b; font-style:italic; margin-left:40px; margin-bottom:4px; font-size:0.95rem; }
+  .answer { color:#2c3e50; margin-left:40px; margin-top:0; margin-bottom:18px; white-space:pre-wrap; line-height:1.85; font-size:0.95rem; }
+  .title { text-align:center; font-size:1.5rem; color:#2c3e50; margin-bottom:6px; letter-spacing:0.08em; }
+  .subtitle { text-align:center; font-size:0.85rem; color:#8b9db5; margin-bottom:40px; }
+  @media print { body { margin:20px; } }
+</style>
+</head>
+<body>
+<div class="title">✦ 同日回响之5Y ✦</div>
+<div class="subtitle">五年日记 · 每日一问 · 归档文档</div>
+${bodyHTML}
+</body>
+</html>`;
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob(['﻿' + content], { type: mimeType + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function autoExportWord() {
+  const html = buildWordHTML();
+  const filename = '同日回响之5Y_归档.doc';
+  downloadFile(html, filename, 'application/msword');
+}
+
+function exportWord() {
+  const html = buildWordHTML();
+  const filename = '同日回响之5Y_归档.doc';
+  downloadFile(html, filename, 'application/msword');
+  showToast('Word文档已导出 📥 请将文件保存到「同日回响之5Y」文件夹', 'info');
+}
+
+// ==================== JSON导入导出 ====================
+function exportJSON() {
+  const allData = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith(APP_PREFIX)) continue;
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      try {
+        allData[key.replace(APP_PREFIX, '')] = JSON.parse(raw);
+      } catch(e) { continue; }
+    }
+  }
+  const json = JSON.stringify(allData, null, 2);
+  downloadFile(json, '同日回响之5Y_备份_' + TODAY_STR + '.json', 'application/json');
+  showToast('JSON备份已导出 📤 请妥善保管', 'info');
+}
+
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      let count = 0;
+      for (let key in data) {
+        if (key.startsWith('answer_')) {
+          localStorage.setItem(APP_PREFIX + key, JSON.stringify(data[key]));
+          count++;
+        }
+      }
+      showToast('成功导入 ' + count + ' 条记录 📥 页面即将刷新', 'success');
+      setTimeout(() => location.reload(), 1500);
+    } catch(e) {
+      showToast('导入失败：文件格式不正确', 'warning');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ==================== 清空今日 ====================
+function resetToday() {
+  if (!confirm('确定要清空今天（' + TODAY_STR + '）的回答记录吗？此操作不可撤销。')) return;
+  localStorage.removeItem(APP_PREFIX + STORAGE_KEY);
+  document.getElementById('answerInput').value = '';
+  currentQuestion = getDefaultQuestion();
+  questionLocked = false;
+  renderQuestion();
+  updateCharCount();
+  document.getElementById('saveIndicator').style.display = 'none';
+  showToast('今日回答已清空 🗑', 'info');
+}
+
+// ==================== 字数统计 ====================
+function updateCharCount() {
+  const len = document.getElementById('answerInput').value.length;
+  document.getElementById('charCount').textContent = len;
+}
+
+// ==================== Toast提示 ====================
+let toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast toast-' + type + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.className = 'toast';
+  }, 2800);
+}
+
+// ==================== Canvas星空背景 ====================
+const STAR_COUNT = 160;
+const COLORS_DEEP = {
+  bg1: [10, 22, 40],     // #0a1628
+  bg2: [26, 42, 74],     // #1a2a4a
+  star: [180, 210, 235], // 明亮蓝白星
+};
+const COLORS_CASUAL = {
+  bg1: [188, 212, 230],  // #bcd4e6
+  bg2: [212, 228, 240],  // #d4e4f0
+  star: [140, 170, 200], // 柔和灰蓝星
+};
+
+let currentColors = { ...COLORS_DEEP };
+let targetColors = { ...COLORS_DEEP };
+let stars = [];
+let canvas, ctx;
+let animFrame;
+
+function initStarfield() {
+  canvas = document.getElementById('starfield');
+  ctx = canvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // 初始化星星
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random(),
+      y: Math.random(),
+      r: 0.3 + Math.random() * 2.2,
+      speedX: (Math.random() - 0.5) * 0.00015,
+      speedY: (Math.random() - 0.5) * 0.0001,
+      opacity: 0.3 + Math.random() * 0.7,
+      twinkleSpeed: 0.003 + Math.random() * 0.015,
+      twinkleOffset: Math.random() * Math.PI * 2,
+    });
+  }
+
+  // 初始模式
+  const initType = classifyQuestion(currentQuestion || getDefaultQuestion());
+  const initColors = initType === 'deep' ? COLORS_DEEP : COLORS_CASUAL;
+  currentColors = { bg1: [...initColors.bg1], bg2: [...initColors.bg2], star: [...initColors.star] };
+  targetColors = { bg1: [...initColors.bg1], bg2: [...initColors.bg2], star: [...initColors.star] };
+
+  animate();
+}
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function setStarMode(type) {
+  const c = type === 'deep' ? COLORS_DEEP : COLORS_CASUAL;
+  targetColors = {
+    bg1: [...c.bg1],
+    bg2: [...c.bg2],
+    star: [...c.star]
+  };
+}
+
+function lerpColor(cur, tgt, amt) {
+  for (let i = 0; i < 3; i++) {
+    cur[i] += (tgt[i] - cur[i]) * amt;
+  }
+}
+
+function animate() {
+  animFrame = requestAnimationFrame(animate);
+
+  // 颜色渐变
+  const lerpSpeed = 0.025;
+  lerpColor(currentColors.bg1, targetColors.bg1, lerpSpeed);
+  lerpColor(currentColors.bg2, targetColors.bg2, lerpSpeed);
+  lerpColor(currentColors.star, targetColors.star, lerpSpeed);
+
+  // 绘制渐变背景
+  const bg1 = currentColors.bg1;
+  const bg2 = currentColors.bg2;
+  const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  grad.addColorStop(0, 'rgb(' + Math.round(bg1[0]) + ',' + Math.round(bg1[1]) + ',' + Math.round(bg1[2]) + ')');
+  grad.addColorStop(1, 'rgb(' + Math.round(bg2[0]) + ',' + Math.round(bg2[1]) + ',' + Math.round(bg2[2]) + ')');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 绘制星星
+  const now = Date.now() * 0.001;
+  const sc = currentColors.star;
+  for (let s of stars) {
+    // 移动
+    s.x += s.speedX;
+    s.y += s.speedY;
+    if (s.x > 1) s.x -= 1;
+    if (s.x < 0) s.x += 1;
+    if (s.y > 1) s.y -= 1;
+    if (s.y < 0) s.y += 1;
+
+    // 闪烁
+    const alpha = s.opacity * (0.55 + 0.45 * Math.sin(now * s.twinkleSpeed + s.twinkleOffset));
+    const px = s.x * canvas.width;
+    const py = s.y * canvas.height;
+
+    ctx.beginPath();
+    ctx.arc(px, py, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + Math.round(sc[0]) + ',' + Math.round(sc[1]) + ',' + Math.round(sc[2]) + ',' + alpha.toFixed(2) + ')';
+    ctx.fill();
+
+    // 光晕（较大星星）
+    if (s.r > 1.5) {
+      ctx.beginPath();
+      ctx.arc(px, py, s.r * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + Math.round(sc[0]) + ',' + Math.round(sc[1]) + ',' + Math.round(sc[2]) + ',' + (alpha * 0.12).toFixed(2) + ')';
+      ctx.fill();
+    }
+  }
+}
+
+// ==================== 启动 ====================
+window.addEventListener('DOMContentLoaded', init);
+
+// 防丢提醒：如果编辑了但没保存，关闭页面前弹窗提醒
+window.addEventListener('beforeunload', function(e) {
+  const answer = document.getElementById('answerInput');
+  const saved = loadFromStorage(STORAGE_KEY);
+  if (answer && answer.value.trim() && !answer.disabled) {
+    if (!saved || saved.answer !== answer.value) {
+      e.preventDefault();
+      e.returnValue = '你有未保存的内容，确定要离开吗？';
+      return e.returnValue;
+    }
+  }
+});
+
+console.log('✨ 同日回响之5Y · 五年日记每日一问 · 已就绪 ✨');
+console.log('📅 今日: ' + TODAY_STR + ' ' + getWeekday(TODAY));
+console.log('📖 默认题目: ' + getDefaultQuestion());
+console.log('💾 数据存储: localStorage (' + APP_PREFIX + ')');
+console.log('📥 Word导出: 自动生成HTML格式.doc文档');
+console.log('🌐 运行模式: 纯离线 · 零依赖 · 永久可用');
+</script>
+
+</body></html>
