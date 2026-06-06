@@ -566,7 +566,7 @@ body {
 <body>
 
 <!-- 星空画布 -->
-<canvas id="starfield" width="395" height="776"></canvas>
+<canvas id="starfield" width="1385" height="831"></canvas>
 
 <!-- 装饰云朵 -->
 <div class="clouds">
@@ -576,7 +576,7 @@ body {
 </div>
 
 <!-- 提示消息 -->
-<div id="toast" class="toast">已从云端同步最新数据 ☁️</div>
+<div id="toast" class="toast toast-success show">☁️ 已从云端同步数据！</div>
 
 <!-- 隐藏的文件导入 -->
 <input type="file" id="importFileInput" accept=".json">
@@ -611,7 +611,7 @@ body {
     <div class="question-label">📖 今日之问</div>
     <div class="question-text" id="questionText">芒种。播种与收获的季节。你最近在'播种'什么？</div>
     <span class="question-type-badge badge-casual" id="questionBadge" style="display: inline-block;">轻松日常</span>
-    <button class="btn btn-change" id="btnChange" onclick="changeQuestion()" disabled="" title="开始书写后题目自动锁定">🔒 已选定</button>
+    <button class="btn btn-change" id="btnChange" onclick="changeQuestion()" title="开始书写后题目自动锁定" disabled="">🔒 已选定</button>
   </div>
 
   <!-- 回答编辑区 -->
@@ -619,7 +619,7 @@ body {
     <textarea id="answerInput" placeholder="在这里写下你的回答…
 
 可以随时回来补充修改（限今日内）"></textarea>
-    <div class="char-count"><span id="charCount">229</span> 字</div>
+    <div class="char-count"><span id="charCount">0</span> 字</div>
     <div class="editor-locked-hint" id="lockedHint" style="display: none;">🔒 这是过往日期的记录，已自动锁定（只读）</div>
   </div>
 
@@ -628,7 +628,7 @@ body {
 
   <!-- 保存状态指示 -->
   <div class="save-indicator" id="saveIndicator" style="display: block;">
-    <span>📝 上次保存：</span><span id="saveTime">今天 15:39:39（已保存 229 字）</span>
+    <span>📝 上次保存：</span><span id="saveTime">今天 15:46:15（已保存 229 字）</span>
     <span class="sync-dot sync-success" id="syncDot" title="已同步 ✅"></span>
   </div>
 
